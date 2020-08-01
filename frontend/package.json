@@ -1,0 +1,25 @@
+{
+  "name": "hotjeju-frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "immer": "^7.0.7",
+    "next": "^9.5.1",
+    "next-redux-saga": "^4.1.2",
+    "next-redux-wrapper": "^6.0.2",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-redux": "^7.2.1",
+    "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-saga": "^1.1.3"
+  }
+}
