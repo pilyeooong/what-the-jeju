@@ -16,11 +16,11 @@ const App = ({ Component }) => {
       </Head>
       <Component />
     </>
-  )
-}
+  );
+};
 
 App.propTypes = {
-  Component: PropTypes.elementType.isRequired
-}
+  Component: PropTypes.elementType.isRequired,
+};
 
 export default wrapper.withRedux(withReduxSaga(App));
