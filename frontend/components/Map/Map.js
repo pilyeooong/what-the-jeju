@@ -31,6 +31,7 @@ const Directions = (props) => {
       setDirections(result);
     }
   };
+  
   return (
     <>
       <DirectionsService
@@ -43,21 +44,20 @@ const Directions = (props) => {
 };
 
 const Map = (props) => {
-  const { pickupLocation, dropLocation } = props;
+  const { startPoint, endPoint } = props;
 
   return (
     <LoadScript googleMapsApiKey={process.env.GOOGLE_MAP_API_KEY}>
       <GoogleMap
-        id="circle-example"
         mapContainerStyle={{
           height: "100%",
           minHeight: "85vh",
           width: "100%"
         }}
         zoom={16}
-        center={ pickupLocation ? { lat: 37.557343, lng: 126.991825 } : undefined} // Seoul CityHall
+        center={ startPoint ? { lat: 37.579779, lng: 126.976955 } : undefined } 
       >
-        <Directions origin={pickupLocation} destination={dropLocation} />
+        <Directions origin={startPoint} destination={endPoint} />
       </GoogleMap>
     </LoadScript>
   );
