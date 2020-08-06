@@ -3,6 +3,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
+const cors = require('cors');
 const passport = require('passport');
 const passportConfig = require('./passport');
 const db = require('./models');
@@ -24,6 +25,7 @@ db.sequelize
 
 passportConfig();
 
+app.use(cors({ origin: '*' }));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

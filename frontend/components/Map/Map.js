@@ -64,3 +64,4 @@ const Map = (props) => {
 };
 
 export default memo(Map);
+
