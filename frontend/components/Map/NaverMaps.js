@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
+
+import { GEOCODE_PLACE_REQUEST } from '../../reducers/place';
 
 const Style = {
   width: '100%',
@@ -7,16 +10,20 @@ const Style = {
 };
 
 const NaverMaps = () => {
+  const dispatch = useDispatch();
+  const { origin, destination } = useSelector((state) => state.place);
+
   const [currentMap, setCurrentMap] = useState(null);
 
-  const [origin, setOrigin] = useState({ name: '', lat: 0, lng: 0 });
-  const [destination, setDestination] = useState({ name: '', lat: 0, lng: 0 });
+  const [startPoint, setStartPoint] = useState('이당로 105');
+  const [endPoint, setEndPoint] = useState('이당로 110');
 
-  const onChangeOrigin = (e) => {
-    setOrigin({ ...origin, name: e.target.value });
+  const onChangeStartPoint = (e) => {
+    setStartPoint(e.target.value);
   };
-  const onChangeDestination = (e) => {
-    setDestination({ ...destination, name: e.target.value });
+
+  const onChangeEndPoint = (e) => {
+    setEndPoint(e.target.value);
   };
 
   useEffect(() => {
@@ -39,30 +46,49 @@ const NaverMaps = () => {
     };
   }, []);
 
-  const onSubmitPlace = (place) => async (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (currentMap) {
+      const findPlace = new naver.maps.LatLng(
+        parseFloat(origin.lat),
+        parseFloat(origin.lng)
+      );
+      new naver.maps.Marker({
+        position: new naver.maps.LatLng(
+          parseFloat(origin.lat),
+          parseFloat(origin.lng)
+        ),
+        map: currentMap,
+      });
+      currentMap.panTo(findPlace);
+    }
+  }, [origin.lat, origin.lng]);
 
+  useEffect(() => {
+    if (currentMap) {
+      const findPlace = new naver.maps.LatLng(
+        parseFloat(destination.lat),
+        parseFloat(destination.lng)
+      );
+      new naver.maps.Marker({
+        position: new naver.maps.LatLng(
+          parseFloat(destination.lat),
+          parseFloat(destination.lng)
+        ),
+        map: currentMap,
+      });
+      currentMap.panTo(findPlace);
+    }
+  }, [destination.lat, destination.lng]);
+
+  const onSubmitPlace = (place) => (e) => {
+    e.preventDefault();
     const type = e.target.id;
-    naver.maps.Service.geocode({ query: place.name }, async function (status, response) {
-      if (status === naver.maps.Service.Status.Error) {
-        alert('Error');
-      }
-      if (response.v2.addresses[0]) {
-        if(type === "origin") {
-          setOrigin({ ...origin, lat: response.v2.addresses[0].y, lng: response.v2.addresses[0].x });
-        } else {
-          setDestination({ ...destination, lat: response.v2.addresses[0].y, lng: response.v2.addresses[0].x });
-        }
-        console.log(type, place);
-        const findPlace = new naver.maps.LatLng(place.lat, place.lng);
-        currentMap.panTo(findPlace);
-        new naver.maps.Marker({
-          position: findPlace,
-          map: currentMap,
-        });
-      } else {
-        alert('정확한 도로명 기입 필요');
-      }
+    dispatch({
+      type: GEOCODE_PLACE_REQUEST,
+      data: {
+        type,
+        place,
+      },
     });
   };
 
@@ -76,36 +102,33 @@ const NaverMaps = () => {
       'http://localhost:4000/api/place/directions',
       { data }
     );
-    new naver.maps.Polyline({
-      path: result.data.route.traoptimal[0].path,
-      strokeColor: '#00CA00',
-      strokeOpacity: 0.8,
-      strokeWeight: 6,
-      zIndex: 2,
-      clickable: true,
-      map: currentMap,
-    });
+    // new naver.maps.Polyline({
+    //   path: result.data.route.traoptimal[0].path,
+    //   strokeColor: '#00CA00',
+    //   strokeOpacity: 0.8,
+    //   strokeWeight: 6,
+    //   zIndex: 2,
+    //   clickable: true,
+    //   map: currentMap,
+    // });
+    console.log(result);
   };
 
   return (
     <>
-      <form action="" id="origin" onSubmit={onSubmitPlace(origin)}>
-        <input type="text" value={origin.name} onChange={onChangeOrigin} />
-        <button type="submit">출발지 찾기</button>
-      </form>
-      <form action="" id="destination" onSubmit={onSubmitPlace(destination)}>
+      <form action="" id="origin" onSubmit={onSubmitPlace(startPoint)}>
         <input
           type="text"
-          value={destination.name}
-          onChange={onChangeDestination}
+          value={startPoint}
+          onChange={onChangeStartPoint}
         />
+        <button type="submit">출발지 찾기</button>
+      </form>
+      <form action="" id="destination" onSubmit={onSubmitPlace(endPoint)}>
+        <input type="text" value={endPoint} onChange={onChangeEndPoint} />
         <button type="submit">목적지 찾기</button>
       </form>
-      {/* <form action="" onSubmit={onSubmitDirection}>
-        <input type="text" value={origin} onChange={onChangeOrigin} />
-        <input type="text" value={destination} onChange={onChangeDestination} />
-        <button type="submit">검색</button>
-      </form> */}
+      <button onClick={onSubmitDirection}>길 찾기</button>
       <div id="map" style={Style}></div>;
     </>
   );
