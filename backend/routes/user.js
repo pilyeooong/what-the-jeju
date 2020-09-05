@@ -5,8 +5,9 @@ const { User } = require('../models');
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
-  return res.status(200).send('GET api users...');
+router.get('/', async (req, res, next) => {
+  const users = await User.findAll();
+  return res.status(200).send(users);
 });
 
 router.post('/login', async (req, res, next) => {
