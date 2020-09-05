@@ -1,7 +1,10 @@
 import produce from 'immer';
 
 const initialState = {
-  me: null,
+  me: {
+    email: "pilyeoong@gmail.com",
+    name: "필영"
+  },
 }
 
 const reducer = (state = initialState, action) => {

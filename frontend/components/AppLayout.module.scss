@@ -1,0 +1,54 @@
+@import '../global-styles/mixin';
+
+.wrapper {
+  .navbar {
+    width: 100%;
+    height: 60px;
+    padding: 0 1rem;
+    .navbar__links {
+      max-width: 1000px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      margin: 0 auto;
+      .logo {
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin-right: auto;
+      }
+      .authenticate {
+        font-size: 1.2rem;
+        // font-weight: bold;
+        color: #11C78F;
+      }
+      .login {
+        margin-left: 1.5em;
+      }
+    }
+  }
+  .categories {
+    width: 100%;
+    height: 55px;
+    padding: 0 1rem;
+    border-bottom: 1px solid #ddd;
+    .category__links {
+      max-width: 1000px;
+      height: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 auto;
+      font-size: 1.2rem;
+      font-weight: 600;
+      a {
+        color: #616161;
+      }
+    }
+  }
+}
+
+@include tablet {
+  .logo {
+    color: red;
+  }
+}

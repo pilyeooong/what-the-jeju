@@ -7,14 +7,18 @@ import withReduxSaga from 'next-redux-saga';
 
 import wrapper from '../store/configureStore';
 
-const App = ({ Component }) => {
+import '../global-styles/main.scss';
+
+
+const App = ({ Component, pageProps }) => {
   return (
     <>
       <Head>
         <meta charSet="utf-8" />
         <title>왓더제주</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap"/>
       </Head>
-      <Component />
+      <Component {...pageProps} />
     </>
   );
 };
