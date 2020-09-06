@@ -1,6 +1,14 @@
 import produce from 'immer';
 
 const initialState = {
+  places: [],
+
+  // load places
+  loadPlaceLoading: false,
+  loadPlaceDone: false,
+  loadPlaceError: null,
+
+  // direction API
   origin: {
     name: null,
     lat: 0,
@@ -13,6 +21,10 @@ const initialState = {
   }
 }
 
+export const LOAD_PLACES_REQUEST = 'LOAD_PLACES_REQUEST';
+export const LOAD_PLACES_SUCCESS = 'LOAD_PLACES_SUCCESS';
+export const LOAD_PLACES_FAILURE = 'LOAD_PLACES_FAILURE';
+
 export const GEOCODE_PLACE_REQUEST = 'GEOCODE_PLACE_REQUEST';
 export const GEOCODE_PLACE_SUCCESS = 'GEOCODE_PLACE_SUCCESS';
 export const GEOCODE_PLACE_FAILURE = 'GEOCODE_PLACE_FAILURE';
@@ -20,6 +32,23 @@ export const GEOCODE_PLACE_FAILURE = 'GEOCODE_PLACE_FAILURE';
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      case LOAD_PLACES_REQUEST: {
+        draft.loadPlaceLoading = true;
+        draft.loadPlaceDone = false;
+        break;
+      }
+      case LOAD_PLACES_SUCCESS: {
+        draft.loadPlaceLoading = false;
+        draft.loadPlaceDone = true;
+        draft.places = draft.places.concat(action.data);
+        break;
+      }
+      case LOAD_PLACES_FAILURE: {
+        draft.loadPlaceLoading = false;
+        draft.loadPlaceDone = false;
+        draft.loadPlaceError = action.error;
+        break;
+      }
       case GEOCODE_PLACE_REQUEST: {
         if(action.data.type === 'origin') {
           draft.origin.name = action.data.place;

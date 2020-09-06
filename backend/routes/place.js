@@ -1,9 +1,27 @@
 const express = require('express');
 const request = require('request');
-const fetch = require('node-fetch');
-const { response } = require('express');
+const { Place, Image } = require('../models');
 
 const router = express.Router();
+
+router.post('/', async (req, res, next) => {
+  try {
+    const place = await Place.create({
+      name: req.body.name,
+      description: req.body.description,
+      address: req.body.address,
+      fee: req.body.fee,
+    })
+    if (req.body.image) {
+      const image = await Image.create({ src: req.body.image });
+      await place.addImages(image);
+    }
+    return res.status(201).send(place);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+})
 
 const headers = {
   'X-NCP-APIGW-API-KEY-ID': `${process.env.NAVER_MAP_CLIENT}`,
@@ -60,4 +78,5 @@ router.get('/geocode/:place', async (req, res, next) => {
     next(err);
   }
 });
+
 module.exports = router;

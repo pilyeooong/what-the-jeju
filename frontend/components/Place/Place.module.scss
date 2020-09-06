@@ -1,0 +1,29 @@
+@import '../../global-styles/mixin';
+
+.placesContainer {
+  max-width: 1024px;
+  margin: 0 auto;
+  .placeItem {
+    display: flex;
+    height: 120px;
+    border-bottom: 1px solid #ddd;
+    // padding: 1em 0;
+    // padding-left: 1rem;
+    .placeImage {
+      width: 40vw;
+      height: 100%;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
+
+@include tablet {
+  .placesContainer{
+    .placeItem {
+      height: 180px;
+    }
+  }
+}
