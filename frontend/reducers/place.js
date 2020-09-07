@@ -35,6 +35,7 @@ const reducer = (state = initialState, action) => {
       case LOAD_PLACES_REQUEST: {
         draft.loadPlaceLoading = true;
         draft.loadPlaceDone = false;
+        draft.places = [];
         break;
       }
       case LOAD_PLACES_SUCCESS: {

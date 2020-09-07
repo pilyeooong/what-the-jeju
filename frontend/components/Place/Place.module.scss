@@ -5,12 +5,12 @@
   margin: 0 auto;
   .placeItem {
     display: flex;
-    height: 120px;
+    height: 140px;
     border-bottom: 1px solid #ddd;
     // padding: 1em 0;
     // padding-left: 1rem;
     .placeImage {
-      width: 40vw;
+      width: 50%;
       height: 100%;
       img {
         width: 100%;
@@ -23,7 +23,18 @@
 @include tablet {
   .placesContainer{
     .placeItem {
-      height: 180px;
+      height: 190px;
+    }
+  }
+}
+
+@include desktop {
+  .placesContainer{
+    .placeItem {
+      height: 240px;
+      .placeImage{
+        width: 50%;
+      }
     }
   }
 }

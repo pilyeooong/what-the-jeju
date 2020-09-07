@@ -21,7 +21,7 @@ const PlaceList = () => {
 
   return (
     <div className={styles.placesContainer}>
-      {places.map(place => <Place place={place} />)}
+      {places.map(place => <Place place={place} key={place.id} />)}
     </div>
   )
 }
