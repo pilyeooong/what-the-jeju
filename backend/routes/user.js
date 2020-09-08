@@ -6,8 +6,22 @@ const { User } = require('../models');
 const router = express.Router();
 
 router.get('/', async (req, res, next) => {
-  const users = await User.findAll();
-  return res.status(200).send(users);
+  try {
+    if (req.user) {
+      const user = await User.findOne({
+        where: { id: req.user.id },
+        attributes: {
+          exclude: ['password']
+        },
+      })
+      return res.status(200).send(user);
+    } else {
+      return res.status(200).send(null);
+    }
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
 });
 
 router.post('/login', async (req, res, next) => {
@@ -52,30 +66,6 @@ router.post('/', async (req, res, next) => {
     console.error(err);
     next(err);
   }
-});
-
-router.get('/kakao', passport.authenticate('kakao'));
-
-router.get('/kakao/callback', async (req, res, next) => {
-  passport.authenticate('kakao', (err, user, info) => {
-    if (err) {
-      console.error(err);
-      next(err);
-    }
-    if (info){
-      return res.status(401).send(info.reason);
-    }
-    return req.login(user, async (loginErr) => {
-      if (loginErr) {
-        console.err(loginErr);
-        return next(loginErr);
-      }
-      const loginUser = await User.findOne({
-        where : { id: user.id },
-      });
-      return res.status(200).send(loginUser);
-    })
-  })(req, res, next);
 });
 
 module.exports = router;

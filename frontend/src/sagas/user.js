@@ -1,36 +1,36 @@
-import { all, fork, call, takeLatest, put, delay } from 'redux-saga/effects';
+import { all, fork, call, takeLatest, put } from 'redux-saga/effects';
 import axios from 'axios';
 
 import {
-  KAKAO_LOGIN_REQUEST,
-  KAKAO_LOGIN_SUCCESS,
-  KAKAO_LOGIN_FAILURE,
+  LOAD_MY_INFO_REQUEST,
+  LOAD_MY_INFO_SUCCESS,
+  LOAD_MY_INFO_FAILURE
 } from '../reducers/user';
 
-function kakaoLoginAPI(){
-  return axios.get('/user/kakao/');
+function loadMyInfoAPI(){
+  return axios.get('/user');
 }
 
-function* kakaoLogin(action) {
+function* loadMyInfo(action) {
   try {
-    const result = yield call(kakaoLoginAPI);
+    const result = yield call(loadMyInfoAPI);
     yield put({
-      type: KAKAO_LOGIN_SUCCESS,
+      type: LOAD_MY_INFO_SUCCESS,
       data: result.data
     })
   } catch (err) {
     console.error(err);
     yield put({
-      type: KAKAO_LOGIN_FAILURE,
+      type: LOAD_MY_INFO_FAILURE,
       error: err
     })
   }
 }
 
-function* watchKakaoLogin() {
-  yield takeLatest(KAKAO_LOGIN_REQUEST, kakaoLogin);
+function* watchLoadMyInfo() {
+  yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo);
 }
 
 export default function* userSaga() {
-  yield all([fork(watchKakaoLogin)]);
+  yield all([fork(watchLoadMyInfo)]);
 }

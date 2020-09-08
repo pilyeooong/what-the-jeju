@@ -5,8 +5,7 @@ import './AppLayout.scss';
 
 const AppLayout = ({ children }) => {
   const dispatch = useDispatch();
-  const me = null;
-  // const { me } = useSelector((state) => state.user);
+  const { me } = useSelector((state) => state.user);
   const [modal, setModal] = useState(false);
 
   const loginBtn = useRef();
@@ -32,7 +31,7 @@ const AppLayout = ({ children }) => {
       loginBtn.current.style.display = 'none';
     }
   }, [modal]);
-  
+
   return (
     <div className="wrapper">
       <div className="loginModal"ref={loginBtn}>
@@ -42,7 +41,7 @@ const AppLayout = ({ children }) => {
         ></div>
         <div className="loginModal__box">
           <button onClick={onToggleLoginModal}>닫기</button>
-          <a href="http://localhost:4000/api/user/kakao">카카오로그인</a>
+          <a href="/api/auth/kakao/">카카오로그인</a>
         </div>
       </div>
       <nav className="navbar">

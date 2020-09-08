@@ -1,19 +1,35 @@
 import produce from 'immer';
 
 const initialState = {
-  me: {
-    email: "pilyeoong@gmail.com",
-    name: "필영"
-  },
+  me: null,
+
+  loadMyInfoLoading: false,
+  loadMyInfoDone: false,
+  loadMyInfoError: null,
 }
 
-export const KAKAO_LOGIN_REQUEST = 'KAKAO_LOGIN_REQUEST';
-export const KAKAO_LOGIN_SUCCESS = 'KAKAO_LOGIN_SUCCESS';
-export const KAKAO_LOGIN_FAILURE = 'KAKAO_LOGIN_FAILURE';
+export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST';
+export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS';
+export const LOAD_MY_INFO_FAILURE = 'LOAD_MY_INFO_FAILURE';
 
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      case LOAD_MY_INFO_REQUEST:
+        draft.loadMyInfoLoading = true;
+        draft.loadMyInfoDone = false;
+        draft.loadMyInfoError = null;
+        break;
+      case LOAD_MY_INFO_SUCCESS:
+        draft.loadMyInfoLoading = false;
+        draft.loadMyInfoDone = true;
+        draft.me = action.data;
+        break;
+      case LOAD_MY_INFO_FAILURE:
+        draft.loadMyInfoLoading = false;
+        draft.loadMyInfoDone = false;
+        draft.loadMyInfoError = action.error;
+        break;
       default:
         break;
     }

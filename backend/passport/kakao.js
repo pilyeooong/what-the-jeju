@@ -9,7 +9,7 @@ dotenv.config();
 module.exports = () => {
   passport.use(new KakaoStrategy({
     clientID: process.env.KAKAO_ID,
-    callbackURL: '/api/user/kakao/callback',
+    callbackURL: '/api/auth/kakao/callback',
   }, async(accessToken, refreshToken, profile, done) => {
     console.log('kakao profile', profile);
     try {
