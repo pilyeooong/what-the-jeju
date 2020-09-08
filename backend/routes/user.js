@@ -47,11 +47,35 @@ router.post('/', async (req, res, next) => {
       nickname: req.body.nickname,
       password: hashedPassword,
     });
-    return res.status(201).send('회원가입 성공');
+    return res.status(201).send(user);
   } catch (err) {
     console.error(err);
     next(err);
   }
+});
+
+router.get('/kakao', passport.authenticate('kakao'));
+
+router.get('/kakao/callback', async (req, res, next) => {
+  passport.authenticate('kakao', (err, user, info) => {
+    if (err) {
+      console.error(err);
+      next(err);
+    }
+    if (info){
+      return res.status(401).send(info.reason);
+    }
+    return req.login(user, async (loginErr) => {
+      if (loginErr) {
+        console.err(loginErr);
+        return next(loginErr);
+      }
+      const loginUser = await User.findOne({
+        where : { id: user.id },
+      });
+      return res.status(200).send(loginUser);
+    })
+  })(req, res, next);
 });
 
 module.exports = router;

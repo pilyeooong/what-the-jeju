@@ -1,9 +1,11 @@
-@import '../global-styles/mixin';
+@import '../../global-styles/mixin';
 
 .wrapper {
   height: 100vh;
+
   .loginModal {
     display: none;
+
     .loginModal__background {
       position: fixed;
       top: 0;
@@ -13,6 +15,7 @@
       background-color: rgba(0, 0, 0, 0.4);
       z-index: 99;
     }
+
     .loginModal__box {
       position: fixed;
       top: 50%;

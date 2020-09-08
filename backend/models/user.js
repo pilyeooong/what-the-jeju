@@ -12,8 +12,18 @@ module.exports = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING(100),
       allowNull: false,
+    },
+    snsId: {
+      type: DataTypes.STRING(30),
+      allowNull: true,
+    },
+    provider: {
+      type: DataTypes.STRING(15),
+      allowNull: false,
+      defaultValue: 'local',
     }
   }, {
+    timestamps: false,
     charset: 'utf8',
     collate: 'utf8_general_ci', // for ko-kr
   });

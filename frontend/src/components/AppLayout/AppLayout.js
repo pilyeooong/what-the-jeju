@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
-import styles from './AppLayout.module.scss';
-import { useSelector } from 'react-redux';
+import './AppLayout.scss';
 
 const AppLayout = ({ children }) => {
+  const dispatch = useDispatch();
   const me = null;
   // const { me } = useSelector((state) => state.user);
   const [modal, setModal] = useState(false);
@@ -31,40 +32,44 @@ const AppLayout = ({ children }) => {
       loginBtn.current.style.display = 'none';
     }
   }, [modal]);
-
-
+  
   return (
-    <div className={styles.wrapper} >
-      <div className={styles.loginModal} ref={loginBtn}>
-        <div className={styles.loginModal__background} onClick={onBackgroundClicked}></div>
-        <div className={styles.loginModal__box}>
+    <div className="wrapper">
+      <div className="loginModal"ref={loginBtn}>
+        <div
+          className="loginModal__background"
+          onClick={onBackgroundClicked}
+        ></div>
+        <div className="loginModal__box">
           <button onClick={onToggleLoginModal}>닫기</button>
+          <a href="http://localhost:4000/api/user/kakao">카카오로그인</a>
         </div>
       </div>
-      <nav className={styles.navbar}>
-        <div className={styles.navbar__links}>
-          <a className={styles.logo} href="#">
+      <nav className="navbar">
+        <div className="navbar__links">
+          <a className="logo" href="#">
             왓더제주
           </a>
           {me ? (
-            <a className={styles.authenticate}>
-              로그아웃
-            </a>
+            <a className="authenticate">로그아웃</a>
           ) : (
             <>
-              <a className={`${styles.authenticate} ${styles.login}`} onClick={onToggleLoginModal}>
+              <a
+                className="authenticate login"
+                onClick={onToggleLoginModal}
+              >
                 로그인
               </a>
             </>
           )}
         </div>
       </nav>
-      <nav className={styles.categories}>
-        <div className={styles.category__links}>
-            <a href="">전체</a>
-            <a href="">바다</a>
-            <a href="">박물관</a>
-            <a href="">카페</a>
+      <nav className="categories">
+        <div className="category__links">
+          <a href="">전체</a>
+          <a href="">바다</a>
+          <a href="">박물관</a>
+          <a href="">카페</a>
         </div>
       </nav>
       <section>{children}</section>

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 
-import styles from './Place.module.scss';
+import './Place.scss';
 
 import Place from './Place';
 import { LOAD_PLACES_REQUEST } from '../../reducers/place';
@@ -20,8 +20,8 @@ const PlaceList = () => {
   console.log(places);
 
   return (
-    <div className={styles.placesContainer}>
-      {places.map(place => <Place place={place} key={place.id} />)}
+    <div className="placesContainer">
+      {places && places.map(place => <Place place={place} key={place.id} />)}
     </div>
   )
 }
