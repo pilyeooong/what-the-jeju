@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import './AppLayout.scss';
+import { LOG_OUT_REQUEST } from '../../reducers/user';
 
 const AppLayout = ({ children }) => {
   const dispatch = useDispatch();
@@ -32,6 +33,12 @@ const AppLayout = ({ children }) => {
     }
   }, [modal]);
 
+  const onClickLogOut = useCallback(() => {
+    dispatch({
+      type: LOG_OUT_REQUEST,
+    })
+  }, []);
+
   return (
     <div className="wrapper">
       <div className="loginModal"ref={loginBtn}>
@@ -50,7 +57,7 @@ const AppLayout = ({ children }) => {
             왓더제주
           </a>
           {me ? (
-            <a className="authenticate">로그아웃</a>
+            <a className="authenticate" onClick={onClickLogOut}>로그아웃</a>
           ) : (
             <>
               <a

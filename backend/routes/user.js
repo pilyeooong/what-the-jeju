@@ -1,7 +1,9 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
+
 const { User } = require('../models');
+const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 const router = express.Router();
 
@@ -47,6 +49,12 @@ router.post('/login', async (req, res, next) => {
       return res.status(200).send(loginUser);
     });
   })(req, res, next);
+});
+
+router.post('/logout', isLoggedIn, (req, res, next) => {
+  req.logout();
+  req.session.destroy();
+  return res.status(200).send('logout');
 });
 
 router.post('/', async (req, res, next) => {

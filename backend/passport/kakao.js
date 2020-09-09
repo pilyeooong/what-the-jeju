@@ -1,4 +1,5 @@
 const dotenv = require('dotenv');
+const bcrypt = require('bcrypt');
 const passport = require('passport');
 const KakaoStrategy = require('passport-kakao').Strategy;
 
@@ -19,9 +20,10 @@ module.exports = () => {
       if (exUser) {
         done(null, exUser);
       } else {
+        const hashedPassword = await bcrypt.hash(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15), 10);
         const newUser = await User.create({
           email: profile._json && profile._json.kakao_account.email,
-          password: 'zkzkdhfhrmdls',
+          password: hashedPassword,
           nickname: profile.displayName,
           snsId: profile.id,
           provider: 'kakao'

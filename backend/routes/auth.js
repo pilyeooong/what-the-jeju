@@ -28,11 +28,8 @@ router.get('/kakao', passport.authenticate('kakao'));
 //   })(req, res, next);
 // });
 
-router.get("/kakao/callback",
-    passport.authenticate("kakao"),
-    (req, res) => {
-      
-        res.redirect("http://localhost:3000");
-    });
+router.get('/kakao/callback', passport.authenticate('kakao'), (req, res) => {
+  res.redirect('http://localhost:3000');
+});
 
 module.exports = router;
