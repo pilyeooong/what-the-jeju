@@ -33,7 +33,7 @@ router.post('/login', async (req, res, next) => {
       return next(err);
     }
     if (info) {
-      return res.status(401).send(info.reason);
+      return res.status(401).send('실패');
     }
     return req.login(user, async (loginErr) => {
       if (loginErr) {

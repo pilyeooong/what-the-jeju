@@ -11,7 +11,7 @@ const Place = ({ place }) => {
         <img src={place.Images[0].src} alt=""/>
       </div>
       <div className="placeInfo">
-        <Link to={`${place.id}`}>
+        <Link to={`/place/${place.id}`}>
           {place.name}
         </Link>
       </div>

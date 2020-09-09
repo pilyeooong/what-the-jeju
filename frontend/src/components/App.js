@@ -3,19 +3,19 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import '../global-styles/main.scss';
 
-import AppLayout from './AppLayout/AppLayout';
-import PlaceList from './Place/PlaceList';
-import PlaceDetail from './Place/PlaceDetail';
+
+import Home from '../pages/Home';
+import Auth from '../pages/Auth';
+import Place from '../pages/Place';
 
 function App() {
   return (
     <Router>
       <Switch>
         <>
-          <AppLayout>
-            <Route exact path="/" component={PlaceList} />
-            <Route exact path="/:placeId" component={PlaceDetail} />
-          </AppLayout>
+          <Route exact path="/" component={Home} />
+          <Route path="/place" component={Place} />
+          <Route path="/auth" component={Auth} />
           <footer>&copy;.2020 reactstagram.pilyeooong</footer>
         </>
       </Switch>

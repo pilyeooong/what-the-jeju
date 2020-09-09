@@ -5,6 +5,7 @@ const PlaceDetail = (props) => {
   return (
     <div>
       here is place Detail
+      {placeId}
     </div>
   )
 }

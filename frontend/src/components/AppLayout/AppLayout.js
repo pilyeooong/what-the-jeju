@@ -90,7 +90,7 @@ const AppLayout = ({ children }) => {
               <i class="fas fa-comment"></i>
               <a href="/api/auth/kakao/">카카오로 시작하기</a>
             </button>
-            <span>이메일로 시작하기</span>
+            <Link to="/auth/login"><span>이메일로 시작하기</span></Link>
           </div>
         </div>
       </div>
