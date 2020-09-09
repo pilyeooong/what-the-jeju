@@ -13,11 +13,7 @@ const PlaceList = () => {
 
   const { places } = useSelector(state => state.place);
 
-  useEffect(() => {
-    dispatch({
-      type: LOAD_MY_INFO_REQUEST,
-    })
-  })
+
 
   useEffect(() => {
     dispatch({

@@ -1,11 +1,23 @@
 @import '../../global-styles/mixin';
 
+@keyframes modal-ani {
+  0% {
+      opacity: 0;
+  }
+  50% {
+    opacity: 5;
+  }
+  100% {
+    opacity: 10;
+  }
+}
+
 .wrapper {
   height: 100vh;
 
   .loginModal {
     display: none;
-
+    animation: modal-ani 2s alternate;
     .loginModal__background {
       position: fixed;
       top: 0;
@@ -23,9 +35,63 @@
       transform: translate(-50%, -50%);
       width: 330px;
       height: 250px;
+      padding: 18px 20px 20px;
       background: white;
       border-radius: 15px;
       z-index: 100;
+
+      .loginModal__header {
+        height: 42px;
+        display: flex;
+        align-items: center;
+        font-size: 1.2rem;
+        border-bottom: 2px solid #ddd;
+        margin-bottom: 1em;
+        padding-bottom: 0.7em;
+
+        span {
+          font-weight: bold;
+          margin-right: auto;
+        }
+        
+        button {
+          padding-top: 2px;
+          border: none;
+          background: white;
+
+          i {
+            font-size: 1.2rem;
+          }
+        }
+      }
+
+      .loginModal__links {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        // padding: 18px 20px 30px;
+        padding-top: 18px;
+
+        .kakaoLogin__link {
+          width: 303px;
+          height: 42px;
+          background: rgb(254,234,2);
+          border: none;
+          border-radius: 5px;
+          font-size: 1.2rem;
+          margin-bottom: 1em;
+
+          a {
+            margin-left: 0.5rem;
+          }
+        }
+
+        span {
+          color: #9D9D9D;
+          border-bottom: 1px solid #9D9D9D;
+        }
+      }
     }
   }
 
@@ -96,6 +162,13 @@
         }
       }
     }
+
+    .loginModal {
+      .loginModal__box {
+        width: 450px;
+        height: 350px;
+      }
+    }
   }
 }
 
@@ -108,6 +181,13 @@
 
       .authenticate {
         font-size: 1.2rem;
+      }
+    }
+
+    .loginModal {
+      .loginModal__box {
+        width: 500px;
+        height: 400px;
       }
     }
   }

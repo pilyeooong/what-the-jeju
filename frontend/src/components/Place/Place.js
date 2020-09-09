@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import './Place.scss';
@@ -10,7 +11,9 @@ const Place = ({ place }) => {
         <img src={place.Images[0].src} alt=""/>
       </div>
       <div className="placeInfo">
-        {place.name}
+        <Link to={`${place.id}`}>
+          {place.name}
+        </Link>
       </div>
     </div>
   )

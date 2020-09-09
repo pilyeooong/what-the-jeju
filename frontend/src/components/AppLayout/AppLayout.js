@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import './AppLayout.scss';
-import { LOG_OUT_REQUEST } from '../../reducers/user';
+import { LOG_OUT_REQUEST, LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 
 const AppLayout = ({ children }) => {
   const dispatch = useDispatch();
@@ -11,74 +12,88 @@ const AppLayout = ({ children }) => {
 
   const loginBtn = useRef();
 
+  useEffect(() => {
+    if (modal) {
+      loginBtn.current.style.display = 'block';
+    } else {
+      loginBtn.current.style.display = 'none';
+    }
+  }, [modal]);
+
+  useEffect(() => {
+    dispatch({
+      type: LOAD_MY_INFO_REQUEST,
+    });
+  }, []);
+
   const onBackgroundClicked = useCallback(() => {
     setModal(false);
   }, [modal]);
 
   const onToggleLoginModal = useCallback(() => {
-    if(!modal){
+    if (!modal) {
       setModal(true);
     } else {
       setModal(false);
     }
   }, [modal]);
 
-  useEffect(() => {
-    if(modal){
-      console.log('block');
-      loginBtn.current.style.display = 'block';
-    } else {
-      console.log('none');
-      loginBtn.current.style.display = 'none';
-    }
-  }, [modal]);
-
   const onClickLogOut = useCallback(() => {
     dispatch({
       type: LOG_OUT_REQUEST,
-    })
+    });
   }, []);
 
   return (
     <div className="wrapper">
-      <div className="loginModal"ref={loginBtn}>
+      <header>
+        <nav className="navbar">
+          <div className="navbar__links">
+            <Link className="logo" to="/">
+              왓더제주
+            </Link>
+            {me ? (
+              <a className="authenticate" onClick={onClickLogOut}>
+                로그아웃
+              </a>
+            ) : (
+              <>
+                <a className="authenticate login" onClick={onToggleLoginModal}>
+                  로그인
+                </a>
+              </>
+            )}
+          </div>
+        </nav>
+        <nav className="categories">
+          <div className="category__links">
+            <a href="">전체</a>
+            <a href="">바다</a>
+            <a href="">박물관</a>
+            <a href="">카페</a>
+          </div>
+        </nav>
+      </header>
+      <section>{children}</section>
+      <div className="loginModal" ref={loginBtn}>
         <div
           className="loginModal__background"
           onClick={onBackgroundClicked}
         ></div>
         <div className="loginModal__box">
-          <button onClick={onToggleLoginModal}>닫기</button>
-          <a href="/api/auth/kakao/">카카오로그인</a>
+          <div className="loginModal__header">
+            <span>왓더제주 로그인하기</span>
+            <button onClick={onToggleLoginModal}><i class="fas fa-times"></i></button>
+          </div>
+          <div className="loginModal__links">
+            <button className="kakaoLogin__link">
+              <i class="fas fa-comment"></i>
+              <a href="/api/auth/kakao/">카카오로 시작하기</a>
+            </button>
+            <span>이메일로 시작하기</span>
+          </div>
         </div>
       </div>
-      <nav className="navbar">
-        <div className="navbar__links">
-          <a className="logo" href="#">
-            왓더제주
-          </a>
-          {me ? (
-            <a className="authenticate" onClick={onClickLogOut}>로그아웃</a>
-          ) : (
-            <>
-              <a
-                className="authenticate login"
-                onClick={onToggleLoginModal}
-              >
-                로그인
-              </a>
-            </>
-          )}
-        </div>
-      </nav>
-      <nav className="categories">
-        <div className="category__links">
-          <a href="">전체</a>
-          <a href="">바다</a>
-          <a href="">박물관</a>
-          <a href="">카페</a>
-        </div>
-      </nav>
-      <section>{children}</section>
     </div>
   );
 };
