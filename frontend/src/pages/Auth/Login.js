@@ -16,8 +16,8 @@ const Login = () => {
       history.push(loginRedirectUrl);
     }
   }, [me]);
+
   return <LoginForm />
-  
 }
 
-export default Login
+export default Login;

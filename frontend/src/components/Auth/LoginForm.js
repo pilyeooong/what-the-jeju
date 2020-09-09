@@ -6,6 +6,8 @@ import useInput from '../../hooks/useInput';
 
 import { LOG_IN_REQUEST } from '../../reducers/user';
 
+import Logo from '../Logo';
+
 const LoginForm = () => {
   const dispatch = useDispatch();
 
@@ -23,13 +25,9 @@ const LoginForm = () => {
       });
   }, [email, password]);
 
-
-
   return (
     <div className="wrapper">
-      <header className="form__header">
-        <div className="form__logo">왓더제주</div>
-      </header>
+      <Logo />
       <form action="">
         <input type="email" placeholder="이메일" value={email} onChange={onChangeEmail} />
         <input type="password" placeholder="비밀번호" value={password} onChange={onChangePassword} />
@@ -38,7 +36,7 @@ const LoginForm = () => {
       </form>
       
       <span>왓더제주 계정이 없으신가요?</span>
-      <Link><a href="">회원가입</a></Link>
+      <Link to="/auth/signup"><a>회원가입</a></Link>
     </div>
   )
 }

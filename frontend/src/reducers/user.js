@@ -8,6 +8,11 @@ const initialState = {
   loadMyInfoDone: false,
   loadMyInfoError: null,
 
+  // 회원가입
+  signupLoading: false,
+  signupDone: false,
+  signupError: null,
+
   // 로그인
   loginLoading: false,
   loginDone: false,
@@ -22,6 +27,10 @@ const initialState = {
 export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST';
 export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS';
 export const LOAD_MY_INFO_FAILURE = 'LOAD_MY_INFO_FAILURE';
+
+export const SIGN_UP_REQUEST = 'SIGN_UP_REQUEST';
+export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS';
+export const SIGN_UP_FAILURE = 'SIGN_UP_FAILURE';
 
 export const LOG_IN_REQUEST = 'LOG_IN_REQUEST';
 export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS';
@@ -50,6 +59,20 @@ const reducer = (state = initialState, action) => {
         draft.loadMyInfoLoading = false;
         draft.loadMyInfoDone = false;
         draft.loadMyInfoError = action.error;
+        break;
+      case SIGN_UP_REQUEST:
+        draft.signupLoading = true;
+        draft.signupDone = false;
+        draft.signupError = null;
+        break;
+      case SIGN_UP_SUCCESS:
+        draft.signupLoading = false;
+        draft.signupDone = true;
+        break;
+      case SIGN_UP_FAILURE:
+        draft.signupLoading = false;
+        draft.signupDone = false;
+        draft.signupError = action.error;
         break;
       case LOG_IN_REQUEST:
         draft.loginLoading = true;
