@@ -33,7 +33,7 @@ const SignupForm = () => {
         email, password, nickname
       }
     })
-  }, [email, password, passwordCheck]);
+  }, [email, nickname, password, passwordCheck]);
 
   useEffect(() => {
     if(signupDone) {
@@ -44,13 +44,13 @@ const SignupForm = () => {
   return (
     <div class="wrapper">
       <Logo />
-      <form action="">
-        <input type="email" placeholder="이메일" value={email} onChange={onChangeEmail} />
-        <input type="text" placeholder="닉네임" value={nickname} onChange={onChangeNickname} />
-        <input type="password" placeholder="비밀번호" value={password} onChange={onChangePassword} />
-        <input type="password" placeholder="비밀번호 확인" value={passwordCheck} onChange={onChangePasswordCheck} />
+      <form onSubmit={onSubmit}>
+        <input type="email" placeholder="이메일" value={email} onChange={onChangeEmail} required/>
+        <input type="text" placeholder="닉네임" value={nickname} onChange={onChangeNickname} required/>
+        <input type="password" placeholder="비밀번호" value={password} onChange={onChangePassword} required/>
+        <input type="password" placeholder="비밀번호 확인" value={passwordCheck} onChange={onChangePasswordCheck} required/>
         {passwordError && <span>비밀번호가 일치하지 않습니다.</span>}
-        <button type="submit" onClick={onSubmit}>회원가입</button>
+        <button type="submit">회원가입</button>
       </form>
     </div>
   )

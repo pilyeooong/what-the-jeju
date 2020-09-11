@@ -20,6 +20,7 @@ const AuthRouter = ({ match }) => {
 
   useEffect(() => {
     if(me) {
+      alert('로그인 한 유저는 접근할 수 없습니다.');
       history.replace('/');
     }
   }, [me]);

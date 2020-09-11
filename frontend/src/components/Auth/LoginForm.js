@@ -26,18 +26,18 @@ const LoginForm = () => {
   }, [email, password]);
 
   return (
-    <div className="wrapper">
+    <>
       <Logo />
-      <form action="">
+      <form onSubmit={onClickLogin}>
         <input type="email" placeholder="이메일" value={email} onChange={onChangeEmail} />
         <input type="password" placeholder="비밀번호" value={password} onChange={onChangePassword} />
-        <button type="submit" onClick={onClickLogin}>로그인하기</button>
+        <button type="submit">로그인하기</button>
         <button><a href="/api/auth/kakao">카카오로 로그인하기</a></button>
       </form>
       
       <span>왓더제주 계정이 없으신가요?</span>
       <Link to="/auth/signup"><a>회원가입</a></Link>
-    </div>
+    </>
   )
 }
 
