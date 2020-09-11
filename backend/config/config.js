@@ -8,6 +8,7 @@ module.exports = {
     "password": process.env.DB_PASSWORD,
     "database": "hotjeju",
     "host": "127.0.0.1",
+    // "host": "hotjeju_mysql", // docker 환경 동작시
     "dialect": "mysql"
   },
   "test": {
@@ -21,7 +22,7 @@ module.exports = {
   "production": {
     "username": "root",
     "password": process.env.DB_PASSWORD,
-    "database": "hotjeju",
+    "database": "hotjeju_prod",
     "host": "127.0.0.1",
     "dialect": "mysql"
   }

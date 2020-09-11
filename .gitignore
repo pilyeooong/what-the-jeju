@@ -1,7 +1,10 @@
 node_modules/
+mysql/
 
 .env
 .dockerignore
+
+
 
 .DS_Store
 .next/

@@ -5,14 +5,32 @@ networks:
         driver: bridge
 services:
     mysql:
+        env_file: .env
         networks:
             - hotjeju
         image: mysql
+        # build: ./mysql
         restart: unless-stopped
         container_name: hotjeju_mysql
         ports:
             - "3306:3306"
-
+        environment: 
+            MYSQL_DATABASE: hotjeju
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+        volumes:
+            - ./mysql/mysql_data:/var/lib/mysql
+    frontend:
+        networks:
+            - hotjeju
+        build:
+            dockerfile: Dockerfile.dev
+            context: ./frontend
+        volumes:
+            - /app/node_modules
+            - ./frontend:/app
+        ports:
+            - "3000:3000"
+        stdin_open: true
     backend:
         networks:
             - hotjeju
