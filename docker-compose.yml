@@ -14,6 +14,7 @@ services:
         container_name: hotjeju_mysql
         ports:
             - "3306:3306"
+        
         environment: 
             MYSQL_DATABASE: hotjeju
             MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
@@ -43,7 +44,5 @@ services:
             - ./backend:/app
         ports:
             - "4000:4000"
-        links:
-            - mysql
         depends_on:
             - mysql
