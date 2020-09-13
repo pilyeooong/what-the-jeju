@@ -18,10 +18,12 @@
     display: flex;
     align-items: center;
     border-bottom: 2px solid lightgray;
+    margin-bottom: 1.5em;
   }
 
-  .form-email {
-    margin-bottom: 1.5em;
+  .password-error {
+    color: red;
+    font-weight: bold;
   }
 
   .form-button {
@@ -43,29 +45,8 @@
       cursor: pointer;
     }
 
-    .form-kakaoLogin {
-      background: rgb(254, 234, 2);
-
-      i {
-        color: black;
-        margin-right: 0.3em;
-      }
-    }
-  }
-
-  .form-signup__link {
-    display: flex;
-    justify-content: center;
-    margin-top: 1em;
-    color: #9D9D9D;
-
-    span {
-      margin-right: 0.5rem;
-    }
-
-    a {
-      font-weight: bold;
-      color: dodgerblue;
+    .local-button:hover {
+      background: black;
     }
   }
 }

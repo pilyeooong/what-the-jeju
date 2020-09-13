@@ -7,6 +7,8 @@ import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 import Login from './Login';
 import Signup from './Signup';
 
+import './Auth.scss'
+
 const AuthRouter = ({ match }) => {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -26,12 +28,12 @@ const AuthRouter = ({ match }) => {
   }, [me]);
   
   return (
-    <>
+    <div className="wrapper">
       <Switch>
         <Route exact path={match.url + '/login'} component={Login} />
         <Route exact path={match.url + '/signup'} component={Signup} />
       </Switch>
-    </>
+    </div>
   );
 };
 
