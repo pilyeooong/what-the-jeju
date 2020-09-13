@@ -3,6 +3,14 @@
 .placesContainer {
   max-width: 1024px;
   margin: 0 auto;
+
+  .place-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
   .placeItem {
     display: flex;
     height: 140px;
