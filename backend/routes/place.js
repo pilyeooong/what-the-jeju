@@ -1,20 +1,40 @@
 const express = require('express');
+const fs = require('fs');
 const request = require('request');
 const { Place, Image } = require('../models');
+const { upload } = require('./middlewares');
 
 const router = express.Router();
 
-router.post('/', async (req, res, next) => {
+try {
+  fs.accessSync('uploads');
+} catch (err) {
+  console.log('uploads folder not exist, Creating');
+  fs.mkdirSync('uploads');
+}
+
+router.post('/images', upload.array('image'), async(req, res, next) => {
+  console.log(req.files);
+  return res.send(req.files.map(f => f.filename));
+})
+
+router.post('/', upload.none(), async (req, res, next) => {
   try {
     const place = await Place.create({
       name: req.body.name,
       description: req.body.description,
       address: req.body.address,
-      fee: req.body.fee,
+      fee: 0,
     })
     if (req.body.image) {
-      const image = await Image.create({ src: req.body.image });
-      await place.addImages(image);
+      if (Array.isArray(req.body.image)){
+        const images = await Promise.all(req.body.image.map(image => Image.create({ src: image })));
+        console.log(images);
+        await post.addImages(images);
+      } else {
+        const image = await Image.create({ src: req.body.image });
+        await place.addImages(image);
+      }
     }
     return res.status(201).send(place);
   } catch (err) {
