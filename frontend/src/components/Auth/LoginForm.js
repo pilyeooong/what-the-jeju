@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -13,8 +13,19 @@ import './LoginForm.scss';
 const LoginForm = () => {
   const dispatch = useDispatch();
 
-  const [email, onChangeEmail] = useInput('');
+  const [email, setEmail] = useState('');
   const [password, onChangePassword] = useInput('');
+
+
+  const onChangeEmail = useCallback((e) => {
+    const { target : { validity : { typeMismatch }}} = e;
+    setEmail(e.target.value);
+    if (!typeMismatch) {
+      document.querySelector('.form-email i').style.color = 'green';
+    } else {
+      document.querySelector('.form-email i').style.color = 'red';
+    }
+  },[]);
 
   const onClickLogin = useCallback(
     (e) => {
@@ -42,7 +53,7 @@ const LoginForm = () => {
               value={email}
               onChange={onChangeEmail}
             />
-            <i class="fas fa-check"></i>
+            <i id="emailValidation" class="fas fa-check"></i>
           </div>
           <div className="form-input form-password">
             <input

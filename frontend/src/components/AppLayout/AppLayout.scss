@@ -13,7 +13,7 @@
 }
 
 .wrapper {
-  height: 100vh;
+  height: 150vh;
 
   .loginModal {
     display: none;
@@ -81,6 +81,7 @@
           border-radius: 5px;
           font-size: 1.2rem;
           margin-bottom: 1em;
+          cursor: pointer;
 
           a {
             margin-left: 0.5rem;

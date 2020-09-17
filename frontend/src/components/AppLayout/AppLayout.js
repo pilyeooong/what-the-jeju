@@ -44,6 +44,10 @@ const AppLayout = ({ children }) => {
     });
   }, []);
 
+  const onClickKakaoLogin = useCallback(() => {
+    document.location.href = "/api/auth/kakao";
+  }, []);
+
   return (
     <div className="wrapper">
       <header>
@@ -86,9 +90,9 @@ const AppLayout = ({ children }) => {
             <button onClick={onToggleLoginModal}><i class="fas fa-times"></i></button>
           </div>
           <div className="loginModal__links">
-            <button className="kakaoLogin__link">
+            <button className="kakaoLogin__link" onClick={onClickKakaoLogin}>
               <i class="fas fa-comment"></i>
-              <a href="/api/auth/kakao/">카카오로 시작하기</a>
+              <a>카카오로 시작하기</a>
             </button>
             <Link to="/auth/login"><span>이메일로 시작하기</span></Link>
           </div>
