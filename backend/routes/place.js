@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const request = require('request');
-const { Place, Image } = require('../models');
+const { Place, Image, Category } = require('../models');
 const { upload } = require('./middlewares');
 
 const router = express.Router();
@@ -14,25 +14,26 @@ try {
 }
 
 router.post('/images', upload.array('image'), async(req, res, next) => {
-  console.log(req.files);
   return res.send(req.files.map(f => f.filename));
 })
 
 router.post('/', upload.none(), async (req, res, next) => {
   try {
     const place = await Place.create({
+      CategoryId: req.body.category,
       name: req.body.name,
       description: req.body.description,
       address: req.body.address,
       fee: 0,
-    })
+    });
     if (req.body.image) {
       if (Array.isArray(req.body.image)){
         const images = await Promise.all(req.body.image.map(image => Image.create({ src: image })));
         console.log(images);
-        await post.addImages(images);
+        await place.addImages(images);
       } else {
         const image = await Image.create({ src: req.body.image });
+        console.log(image);
         await place.addImages(image);
       }
     }

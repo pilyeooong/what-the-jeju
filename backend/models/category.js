@@ -1,22 +1,24 @@
 const DataTypes = require('sequelize');
 const { Model } = DataTypes;
 
-module.exports = class Image extends Model {
+module.exports = class Category extends Model {
   static init(sequelize) {
     return super.init({
-      src: {
-        type: DataTypes.STRING(200),
+      name: {
+        type: DataTypes.STRING(20),
         allowNull: false,
       },
     }, {
-      modelName: 'Image',
-      tableName: 'Images',
+      modelName: 'Category',
+      tableName: 'Categories',
+      timestamps: false,
       charset: 'utf8',
       collate: 'utf8_general_ci',
-      sequelize,
+      sequelize
     })
   }
+  
   static associate(db) {
-    db.Image.belongsTo(db.Place);
+    db.Category.hasMany(db.Place);
   }
 }
