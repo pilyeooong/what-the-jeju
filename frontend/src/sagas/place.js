@@ -5,6 +5,9 @@ import {
   LOAD_PLACES_REQUEST,
   LOAD_PLACES_SUCCESS,
   LOAD_PLACES_FAILURE,
+  LOAD_PLACE_REQUEST,
+  LOAD_PLACE_SUCCESS,
+  LOAD_PLACE_FAILURE,
   UPLOAD_PLACE_REQUEST,
   UPLOAD_PLACE_SUCCESS,
   UPLOAD_PLACE_FAILURE,
@@ -38,6 +41,31 @@ function* loadPlaces(action) {
 
 function* watchLoadPlaces() {
   yield takeLatest(LOAD_PLACES_REQUEST, loadPlaces);
+}
+
+// 단일 Place Detail
+function loadPlaceAPI(data) {
+  return axios.get(`/place/${data}`);
+}
+
+function* loadPlace(action) {
+  try {
+    const result = yield call(loadPlaceAPI, action.data);
+    yield put({
+      type: LOAD_PLACE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_PLACE_FAILURE,
+      error: err,
+    });
+  }
+}
+
+function* watchLoadPlace() {
+  yield takeLatest(LOAD_PLACE_REQUEST, loadPlace);
 }
 
 function uploadPlaceAPI(data) {
@@ -123,5 +151,6 @@ export default function* placeSaga() {
     fork(watchLoadPlaces),
     fork(watchUploadPlace),
     fork(watchUploadImages),
+    fork(watchLoadPlace),
   ]);
 }

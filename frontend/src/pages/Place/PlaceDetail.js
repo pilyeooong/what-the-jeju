@@ -1,13 +1,40 @@
-import React from 'react'
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { LOAD_PLACE_REQUEST } from '../../reducers/place';
+
+import ImageSlider from '../../components/ImageSlider';
+import PlaceInfo from '../../components/Place/PlaceInfo';
+import AppLayout from '../../components/AppLayout/AppLayout';
 
 const PlaceDetail = (props) => {
-  const { match: { params: { placeId }}} = props;
+  const dispatch = useDispatch();
+  const {
+    match: {
+      params: { placeId },
+    },
+  } = props;
+
+  const { placeDetail } = useSelector((state) => state.place);
+
+  useEffect(() => {
+    dispatch({
+      type: LOAD_PLACE_REQUEST,
+      data: placeId,
+    });
+  }, []);
+
   return (
-    <div>
-      here is place Detail
-      {placeId}
-    </div>
-  )
-}
+    <AppLayout>
+      <div className="placesContainer">
+        {placeDetail && (
+          <>
+            <ImageSlider images={placeDetail.Images} />
+            <PlaceInfo placeDetail={placeDetail} />
+          </>
+        )}
+      </div>
+    </AppLayout>
+  );
+};
 
 export default PlaceDetail;

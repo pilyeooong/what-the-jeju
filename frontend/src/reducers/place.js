@@ -3,6 +3,7 @@ import produce from 'immer';
 const initialState = {
   places: [],
   imagePaths: [],
+  placeDetail: null,
 
   // load places
   loadPlaceLoading: false,
@@ -36,6 +37,10 @@ export const LOAD_PLACES_REQUEST = 'LOAD_PLACES_REQUEST';
 export const LOAD_PLACES_SUCCESS = 'LOAD_PLACES_SUCCESS';
 export const LOAD_PLACES_FAILURE = 'LOAD_PLACES_FAILURE';
 
+export const LOAD_PLACE_REQUEST = 'LOAD_PLACE_REQUEST';
+export const LOAD_PLACE_SUCCESS = 'LOAD_PLACE_SUCCESS';
+export const LOAD_PLACE_FAILURE = 'LOAD_PLACE_FAILURE';
+
 export const UPLOAD_PLACE_REQUEST = 'UPLOAD_PLACE_REQUEST';
 export const UPLOAD_PLACE_SUCCESS = 'UPLOAD_PLACE_SUCCESS';
 export const UPLOAD_PLACE_FAILURE = 'UPLOAD_PLACE_FAILURE';
@@ -65,6 +70,24 @@ const reducer = (state = initialState, action) => {
         break;
       }
       case LOAD_PLACES_FAILURE: {
+        draft.loadPlaceLoading = false;
+        draft.loadPlaceDone = false;
+        draft.loadPlaceError = action.error;
+        break;
+      }
+      case LOAD_PLACE_REQUEST: {
+        draft.loadPlaceLoading = true;
+        draft.loadPlaceDone = false;
+        draft.placeDetail = null;
+        break;
+      }
+      case LOAD_PLACE_SUCCESS: {
+        draft.loadPlaceLoading = false;
+        draft.loadPlaceDone = true;
+        draft.placeDetail = action.data;
+        break;
+      }
+      case LOAD_PLACE_FAILURE: {
         draft.loadPlaceLoading = false;
         draft.loadPlaceDone = false;
         draft.loadPlaceError = action.error;
