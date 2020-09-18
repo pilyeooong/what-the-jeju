@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 
 import useInput from '../../hooks/useInput';
@@ -11,6 +11,7 @@ const AddPlaceForm = () => {
 
   const { imagePaths } = useSelector(state => state.place);
 
+  const [category, onChangeCategory] = useInput('');
   const [name, onChangeName] = useInput('');
   const [description, onChangeDescription] = useInput('');
   const [address, onChangeAddress] = useInput('');
@@ -21,6 +22,7 @@ const AddPlaceForm = () => {
     imagePaths.forEach(src => {
       formData.append('image', src);
     });
+    formData.append('category', category);
     formData.append('name', name);
     formData.append('description', description);
     formData.append('address', address);
@@ -43,8 +45,11 @@ const AddPlaceForm = () => {
 
   return (
     <form onSubmit={onSubmit}>
-      <select name="" id="">
-        
+      <select placeholder="카테고리" value={category} onChange={onChangeCategory}>
+        <option selected>------------</option>
+        <option value="1">카페</option>
+        <option value="2">해변</option>
+        <option value="3">박물관</option>
       </select>
       <input type="text" placeholder="이름" value={name} onChange={onChangeName} required/>
       <input type="text" placeholder="설명" value={description} onChange={onChangeDescription} required/>
