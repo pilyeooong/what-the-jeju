@@ -13,9 +13,9 @@ try {
   fs.mkdirSync('uploads');
 }
 
-router.post('/images', upload.array('image'), async(req, res, next) => {
-  return res.send(req.files.map(f => f.filename));
-})
+router.post('/images', upload.array('image'), async (req, res, next) => {
+  return res.send(req.files.map((f) => f.filename));
+});
 
 router.post('/', upload.none(), async (req, res, next) => {
   try {
@@ -27,8 +27,10 @@ router.post('/', upload.none(), async (req, res, next) => {
       fee: 0,
     });
     if (req.body.image) {
-      if (Array.isArray(req.body.image)){
-        const images = await Promise.all(req.body.image.map(image => Image.create({ src: image })));
+      if (Array.isArray(req.body.image)) {
+        const images = await Promise.all(
+          req.body.image.map((image) => Image.create({ src: image }))
+        );
         console.log(images);
         await place.addImages(images);
       } else {
@@ -42,7 +44,22 @@ router.post('/', upload.none(), async (req, res, next) => {
     console.error(err);
     next(err);
   }
-})
+});
+
+router.get('/:id', async (req, res, next) => {
+  try {
+    const place = await Place.findOne({
+      where: { id: req.params.id },
+      include: [{
+        model: Image
+      }],
+    });
+    return res.status(200).send(place);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
 
 const headers = {
   'X-NCP-APIGW-API-KEY-ID': `${process.env.NAVER_MAP_CLIENT}`,
@@ -55,7 +72,9 @@ router.post('/directions', async (req, res, next) => {
   } = req.body;
 
   const startPoint = `${parseFloat(origin.lat)},${parseFloat(origin.lng)}`;
-  const endPoint = (`${parseFloat(destination.lat)},${parseFloat(destination.lng)}`);
+  const endPoint = `${parseFloat(destination.lat)},${parseFloat(
+    destination.lng
+  )}`;
 
   console.log(startPoint);
 
