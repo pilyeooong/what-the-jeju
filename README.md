@@ -15,6 +15,7 @@
 - MySQL
 - React.js
 - Redux, Redux-Saga
+- Docker
 
 ----------
 
