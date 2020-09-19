@@ -10,16 +10,18 @@
     left: 50%;
     transform: translate(-50%, -50%);
   }
-  
+
   .placeItem {
     display: flex;
     height: 140px;
     border-bottom: 1px solid #ddd;
+
     // padding: 1em 0;
     // padding-left: 1rem;
     .placeImage {
       width: 50%;
       height: 100%;
+
       img {
         width: 100%;
         height: 100%;
@@ -29,7 +31,7 @@
 }
 
 @include tablet {
-  .placesContainer{
+  .placesContainer {
     .placeItem {
       height: 190px;
     }
@@ -37,12 +39,10 @@
 }
 
 @include desktop {
-  .placesContainer{
+  .placesContainer {
+
     .placeItem {
       height: 240px;
-      .placeImage{
-        width: 50%;
-      }
     }
   }
 }
