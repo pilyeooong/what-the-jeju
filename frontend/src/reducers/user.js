@@ -40,7 +40,9 @@ export const LOG_OUT_REQUEST = 'LOG_OUT_REQUEST';
 export const LOG_OUT_SUCCESS = 'LOG_OUT_SUCCESS';
 export const LOG_OUT_FAILURE = 'LOG_OUT_FAILURE';
 
-
+export const CHECK_JEJU_NATIVE_REQUEST = 'CHECK_JEJU_NATIVE_REQUEST';
+export const CHECK_JEJU_NATIVE_SUCCESS = 'CHECK_JEJU_NATIVE_SUCCESS';
+export const CHECK_JEJU_NATIVE_FAILURE = 'CHECK_JEJU_NATIVE_FAILURE';
 
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
