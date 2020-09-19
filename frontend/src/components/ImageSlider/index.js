@@ -1,22 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { API_HOST } from '../../utils/Constants';
 
 import './ImageSlider.scss';
 
 const ImageSlider = ({ images }) => {
   const [x, setX] = useState(0);
+  const slideRefs = useRef([]);
 
   const goLeft = () => {
-    x === 0
-      ? setX(-100 * (images.length - 1))
-      : setX((prev) => prev + 100);
+    x === 0 ? setX(-100 * (images.length - 1)) : setX((prev) => prev + 100);
   };
 
   const goRight = () => {
-    x === -100 * (images.length - 1)
-      ? setX(0)
-      : setX((prev) => prev - 100);
+    x === -100 * (images.length - 1) ? setX(0) : setX((prev) => prev - 100);
   };
+
+  useEffect(() => {
+    slideRefs.current.forEach(slide => slide.style.transform = `translateX(${x}%)`);
+  }, [x]);
 
   return (
     <div className="slider">
@@ -24,7 +25,7 @@ const ImageSlider = ({ images }) => {
         <div
           key={index}
           className="slide"
-          style={{ transform: `translateX(${x}%)` }}
+          ref={(v) => (slideRefs.current[index] = v)}
         >
           <img src={`${API_HOST}/${item.src}`} alt="" />
         </div>
