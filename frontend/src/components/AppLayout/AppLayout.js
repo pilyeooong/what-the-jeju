@@ -87,7 +87,7 @@ const AppLayout = ({ children }) => {
         <div className="loginModal__box">
           <div className="loginModal__header">
             <span>왓더제주 로그인하기</span>
-            <button onClick={onToggleLoginModal}><i class="fas fa-times"></i></button>
+            <button onClick={onToggleLoginModal}><i className="fas fa-times"></i></button>
           </div>
           <div className="loginModal__links">
             <button className="kakaoLogin__link" onClick={onClickKakaoLogin}>
