@@ -2,6 +2,8 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 
+const axios = require('axios');
+
 const { User } = require('../models');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
@@ -13,9 +15,9 @@ router.get('/', async (req, res, next) => {
       const user = await User.findOne({
         where: { id: req.user.id },
         attributes: {
-          exclude: ['password']
+          exclude: ['password'],
         },
-      })
+      });
       return res.status(200).send(user);
     } else {
       return res.status(200).send(null);
@@ -74,6 +76,28 @@ router.post('/', async (req, res, next) => {
     console.error(err);
     next(err);
   }
+});
+
+// localhost나 https에서만 동작
+router.post('/check', async (req, res, next) => {
+  const config = {
+    headers: {
+      'X-NCP-APIGW-API-KEY-ID': `${process.env.NAVER_MAP_CLIENT}`,
+      'X-NCP-APIGW-API-KEY': `${process.env.NAVER_MAP_CLIENT_SECRET}`,
+    },
+  };
+
+  const { lat, lng } = req.body;
+  axios
+    .get(
+      `https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?request=coordsToaddr&coords=${lng},${lat}&sourcecrs=epsg:4326&output=json&orders=legalcode`,
+      config
+    )
+    .then((response) => res.status(200).send(response.data))
+    .catch((err) => {
+      console.error(err);
+      next(err);
+    });
 });
 
 module.exports = router;
