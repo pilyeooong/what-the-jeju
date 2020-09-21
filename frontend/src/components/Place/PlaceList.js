@@ -21,7 +21,10 @@ const PlaceList = () => {
     });
   }, []);
 
-  console.log(places);
+  useEffect(() => {
+    console.log(window.innerWidth);
+  }, [window.innerWidth]);
+
 
   return (
     <div className="placesContainer">

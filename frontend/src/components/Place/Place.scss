@@ -38,6 +38,10 @@
       strong {
         font-size: 1.3rem;
       }
+
+      .hashtag {
+        color: dodgerblue;
+      }
     }
   }
 }
@@ -51,9 +55,9 @@
     .placeItem {
       display: flex;
       flex-direction: column;
-      width: 340px;
+      margin-top: 2em;
+      width: 350px;
       height: 450px;
-      margin: 2em 0 0 0;
       padding: 0;
       box-shadow: 3px 4px 5px 0 rgba(2,2,2,.2);
 
@@ -67,18 +71,22 @@
         text-align: center;
       }
     }
-
   }
 }
 
+
+
 @include desktop {
   .placesContainer {
-    justify-content: flex-start;
-
+    justify-content: space-between;
     .placeItem {
-      width: 370px;
-      margin: 2em 0 3em 2em;
+      width: 330px;
     }
 
+  }
+  
+  .placesContainer::after {
+    content: "";
+    flex: 0 0 330px;
   }
 }

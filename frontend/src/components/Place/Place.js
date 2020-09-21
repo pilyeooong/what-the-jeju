@@ -27,7 +27,7 @@ const Place = ({ place }) => {
         </Link>
         <span className="placeAddress">제주도 > 서귀포시</span>
         <div className="placeHashtags">
-          {tempHashtags.map(tag => <span className="hashtag">#{tag}</span>)}
+          {tempHashtags.map((tag, i) => <span key={i} className="hashtag">#{tag}</span>)}
         </div>
       </div>
     </div>
