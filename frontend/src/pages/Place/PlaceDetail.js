@@ -25,7 +25,7 @@ const PlaceDetail = (props) => {
 
   return (
     <AppLayout>
-      <div className="placesContainer">
+      <div className>
         {placeDetail && (
           <>
             <ImageSlider images={placeDetail.Images} />
