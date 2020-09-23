@@ -50,9 +50,11 @@ router.get('/:id', async (req, res, next) => {
   try {
     const place = await Place.findOne({
       where: { id: req.params.id },
-      include: [{
-        model: Image
-      }],
+      include: [
+        {
+          model: Image,
+        },
+      ],
     });
     return res.status(200).send(place);
   } catch (err) {
@@ -69,27 +71,45 @@ const config = {
 };
 
 router.post('/directions', (req, res, next) => {
-  const { data: { origin, destination }} = req.body;
+  const {
+    data: { origin, destination },
+  } = req.body;
   const startPoint = `${parseFloat(origin.lng)},${parseFloat(origin.lat)}`;
   const endPoint = `${parseFloat(destination.lng)},${parseFloat(
     destination.lat
   )}`;
-  axios.get(`https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${startPoint}&goal=${endPoint}?option=trafast`, config)
-  .then(response => res.status(200).send(response.data))
-  .catch(err => {
-    console.error(err);
-    next(err);
-  })
-})
+  const wayPoints = [
+    { name: '정방폭포', lng: 126.5730501, lat: 33.244748 },
+    { name: '서귀포의료원', lng: 126.5639216, lat: 33.2555355 },
+    { name: '열린병원', lng: 126.5654153, lat: 33.2544709 },
+    { name: '서귀포중학교', lng: 126.5699083, lat: 33.2477513 },
+  ];
+  axios
+    .get(
+      `https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${startPoint}&goal=${endPoint}&option=traoptimal`,
+      config
+    )
+    .then((response) => res.status(200).send(response.data))
+    .catch((err) => {
+      console.error(err);
+      next(err);
+    });
+});
 
 router.get('/geocode/:place', async (req, res, next) => {
   const { place } = req.params;
-  axios.get(`https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=${encodeURI(place)}`, config)
-  .then(response => res.status(200).send(response.data))
-  .catch(err => {
-    console.error(err);
-    next(err);
-  });
+  axios
+    .get(
+      `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=${encodeURI(
+        place
+      )}`,
+      config
+    )
+    .then((response) => res.status(200).send(response.data))
+    .catch((err) => {
+      console.error(err);
+      next(err);
+    });
 });
 
 module.exports = router;

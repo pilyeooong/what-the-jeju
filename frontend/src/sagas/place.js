@@ -122,12 +122,11 @@ function geocodeAPI(data) {
 
 function* geocode(action) {
   try {
-    const type = action.data.type;
-    const result = yield call(geocodeAPI, action.data.place);
+    const result = yield call(geocodeAPI, action.data);
+    console.log(result);
     yield put({
       type: GEOCODE_PLACE_SUCCESS,
       data: {
-        type,
         lat: result.data.addresses[0].y,
         lng: result.data.addresses[0].x,
       },
