@@ -14,8 +14,16 @@ const LoginForm = () => {
   const dispatch = useDispatch();
 
   const [email, setEmail] = useState('');
-  const [password, onChangePassword] = useInput('');
+  const [password, setPassword] = useState('');
 
+  const onChangePassword = useCallback((e) => {
+    setPassword(e.target.value);
+    if(password.length < 3) {
+      document.querySelector('.form-password i').style.color = 'red';
+    } else {
+      document.querySelector('.form-password i').style.color = 'green';
+    }
+  }, [password]);
 
   const onChangeEmail = useCallback((e) => {
     const { target : { validity : { typeMismatch }}} = e;

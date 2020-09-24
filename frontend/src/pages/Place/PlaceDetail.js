@@ -6,6 +6,8 @@ import ImageSlider from '../../components/ImageSlider';
 import PlaceInfo from '../../components/Place/PlaceInfo';
 import AppLayout from '../../components/AppLayout/AppLayout';
 
+import './PlaceDetail.scss';
+
 const PlaceDetail = (props) => {
   const dispatch = useDispatch();
   const {
@@ -25,13 +27,14 @@ const PlaceDetail = (props) => {
 
   return (
     <AppLayout>
-      <div className>
+      <div className="placeContainer">
         {placeDetail && (
-          <>
+          <div className="place-about">
             <ImageSlider images={placeDetail.Images} />
             <PlaceInfo placeDetail={placeDetail} />
-          </>
+          </div>
         )}
+        1
       </div>
     </AppLayout>
   );

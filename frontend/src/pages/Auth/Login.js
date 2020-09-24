@@ -11,12 +11,6 @@ const Login = () => {
   const { from: loginRedirectUrl } = location.state || { from: { pathname: "/" }};
   const { me } = useSelector(state => state.user);
 
-  useEffect(() => {
-    if(me) {
-      history.push(loginRedirectUrl);
-    }
-  }, [me]);
-
   return <LoginForm />
 }
 

@@ -1,0 +1,26 @@
+@import '../../global-styles/mixin';
+
+.placeContainer {
+  max-width: 1200px;
+}
+
+@include tablet{
+  .placeContainer {
+    margin: 0 auto;
+
+    .place-about {
+      display: flex;
+      height: 450px;
+    }
+
+    .slider {
+      width: 50%;
+      height: 100%;
+    }
+
+    .info-container {
+      width: 50%;
+      height: 100%;
+    }
+  }
+}

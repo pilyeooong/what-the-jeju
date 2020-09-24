@@ -9,6 +9,10 @@ html {
   box-sizing: border-box;
 }
 
+body {
+  min-width: 375px;
+}
+
 a {
   color: rgb(29, 29, 31);
   text-decoration: none;
