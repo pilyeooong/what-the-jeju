@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const axios = require('axios');
-const { Place, Image, Category } = require('../models');
+const { Place, Image, User } = require('../models');
 const { upload } = require('./middlewares');
 
 const router = express.Router();
@@ -54,6 +54,11 @@ router.get('/:id', async (req, res, next) => {
         {
           model: Image,
         },
+        {
+          model: User,
+          as: 'Wishers',
+          attributes: ['id']
+        }
       ],
     });
     return res.status(200).send(place);
@@ -62,6 +67,27 @@ router.get('/:id', async (req, res, next) => {
     next(err);
   }
 });
+
+router.patch('/wish/:placeId', async (req, res, next) => {
+  try {
+    const place = await Place.findOne({ where: { id: parseInt(req.params.placeId, 10) }});
+    if(!place) {
+      return res.status(404).send('존재하지 않는 장소입니다.');
+    }
+    if(!req.user) {
+      return res.status(401).send('로그인이 필요합니다.');
+    }
+    await place.addWishers(req.user.id);
+    return res.status(200).json({ placeId: place.id, userId: req.user.id });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+})
+
+// router.get('/search/address', async (req, res, next) => {
+
+// });
 
 const config = {
   headers: {

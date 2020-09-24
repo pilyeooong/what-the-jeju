@@ -4,7 +4,7 @@ const passport = require('passport');
 
 const axios = require('axios');
 
-const { User } = require('../models');
+const { User, Place } = require('../models');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 const router = express.Router();
@@ -17,6 +17,11 @@ router.get('/', async (req, res, next) => {
         attributes: {
           exclude: ['password'],
         },
+        include: [{
+          model: Place,
+          as: 'Wished',
+          attributes: ['id']
+        }]
       });
       return res.status(200).send(user);
     } else {
@@ -35,7 +40,7 @@ router.post('/login', async (req, res, next) => {
       return next(err);
     }
     if (info) {
-      return res.status(401).send('실패');
+      return res.status(401).send('해당 이메일로 가입된 계정이 없거나 비밀번호가 일치하지 않습니다.');
     }
     return req.login(user, async (loginErr) => {
       if (loginErr) {

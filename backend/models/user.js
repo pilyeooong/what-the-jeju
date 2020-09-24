@@ -42,6 +42,6 @@ module.exports = class User extends Model {
   }
 
   static associate(db) {
-
+    db.User.belongsToMany(db.Place, { through: 'WishList', as : 'Wished' })
   }
 }

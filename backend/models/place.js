@@ -34,6 +34,7 @@ module.exports = class Place extends Model {
 
   static associate(db) {
     db.Place.belongsTo(db.User);
+    db.Place.belongsToMany(db.User, { through: 'WishList', as: 'Wishers' });
     db.Place.belongsTo(db.Category);
     db.Place.hasMany(db.Image);
   }
