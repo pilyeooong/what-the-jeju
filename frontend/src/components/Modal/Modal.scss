@@ -1,0 +1,52 @@
+@import '../../global-styles/mixin';
+
+.modal-container {
+  // display: none;
+  .modal__background {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 99;
+  }
+
+  .modal__box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 330px;
+    height: 350px;
+    padding: 18px 20px 20px;
+    background: white;
+    border-radius: 15px;
+    z-index: 100;
+  }
+
+  .modal__header {
+    height: 42px;
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 1em;
+    padding-bottom: 0.7em;
+
+    span {
+      font-weight: bold;
+      margin-right: auto;
+    }
+    
+    button {
+      padding-top: 2px;
+      border: none;
+      background: white;
+
+      i {
+        font-size: 1.2rem;
+      }
+    }
+  }
+}
