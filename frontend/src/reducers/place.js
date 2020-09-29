@@ -20,6 +20,12 @@ const initialState = {
   uploadImageDone: false,
   uploadImageError: null,
 
+  // search address
+  searchAddressLoading: false,
+  searchAddressDone: false,
+  searchAddressError: null,
+  placeAddresses: [],
+
   // direction API
   origin: {
     name: null,
@@ -52,6 +58,10 @@ export const UPLOAD_IMAGES_FAILURE = 'UPLOAD_IMAGES_FAILURE';
 export const GEOCODE_PLACE_REQUEST = 'GEOCODE_PLACE_REQUEST';
 export const GEOCODE_PLACE_SUCCESS = 'GEOCODE_PLACE_SUCCESS';
 export const GEOCODE_PLACE_FAILURE = 'GEOCODE_PLACE_FAILURE';
+
+export const SEARCH_ADDRESS_REQUEST = 'SEARCH_ADDRESS_REQUEST';
+export const SEARCH_ADDRESS_SUCCESS = 'SEARCH_ADDRESS_SUCCESS';
+export const SEARCH_ADDRESS_FAILURE = 'SEARCH_ADDRESS_FAILURE';
 
 
 const reducer = (state = initialState, action) => {
@@ -150,6 +160,24 @@ const reducer = (state = initialState, action) => {
       case GEOCODE_PLACE_FAILURE: {
         break;
       }
+      case SEARCH_ADDRESS_REQUEST: {
+        draft.searchAddressLoading = true;
+        draft.searchAddressDone = false;
+        draft.searchAddressError = null;
+        break;
+      }
+      case SEARCH_ADDRESS_SUCCESS: {
+        draft.searchAddressLoading = false;
+        draft.searchAddressDone = true;
+        draft.placeAddresses = action.data;
+        break;
+      }
+      case SEARCH_ADDRESS_FAILURE: {
+        draft.searchAddressLoading = false;
+        draft.searchAddressError = action.error;
+        break;
+      }
+
       default:
         break;
     }

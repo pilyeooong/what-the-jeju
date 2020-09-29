@@ -17,6 +17,9 @@ import {
   GEOCODE_PLACE_REQUEST,
   GEOCODE_PLACE_SUCCESS,
   GEOCODE_PLACE_FAILURE,
+  SEARCH_ADDRESS_REQUEST,
+  SEARCH_ADDRESS_SUCCESS,
+  SEARCH_ADDRESS_FAILURE,
 } from '../reducers/place';
 
 function loadPlacesAPI() {
@@ -144,6 +147,31 @@ function* watchGeocode() {
   yield takeLatest(GEOCODE_PLACE_REQUEST, geocode);
 }
 
+function searchAddressAPI(data) {
+  return axios.get(`/place/address/${encodeURI(data)}`);
+}
+
+function* searchAddress(action) {
+  try {
+    const result = yield call(searchAddressAPI, action.data);
+    console.log(result);
+    yield put({
+      type: SEARCH_ADDRESS_SUCCESS,
+      data: result.data
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: SEARCH_ADDRESS_FAILURE,
+      error: err,
+    });
+  }
+}
+
+function* watchSearchAddress() {
+  yield takeLatest(SEARCH_ADDRESS_REQUEST, searchAddress);
+}
+
 export default function* placeSaga() {
   yield all([
     fork(watchGeocode),
@@ -151,5 +179,6 @@ export default function* placeSaga() {
     fork(watchUploadPlace),
     fork(watchUploadImages),
     fork(watchLoadPlace),
+    fork(watchSearchAddress),
   ]);
 }
