@@ -17,6 +17,31 @@ router.post('/images', upload.array('image'), async (req, res, next) => {
   return res.send(req.files.map((f) => f.filename));
 });
 
+router.get('/address/:placeName', async (req, res, next) => {
+  try {
+    const result = await axios.get(
+      `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURI(
+        req.params.placeName
+      )}`,
+      { headers: { Authorization: `KakaoAK ${process.env.KAKAO_ID}` } }
+    );
+
+    const addresses = result.data.documents.map((address) => {
+      const obj = {};
+      obj.address_name = address.address_name;
+      obj.place_name = address.place_name;
+      obj.lng = address.x;
+      obj.lat = address.y;
+      return obj;
+    });
+
+    return res.status(200).send(addresses);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
 router.post('/', upload.none(), async (req, res, next) => {
   try {
     const place = await Place.create({
@@ -57,8 +82,8 @@ router.get('/:id', async (req, res, next) => {
         {
           model: User,
           as: 'Wishers',
-          attributes: ['id']
-        }
+          attributes: ['id'],
+        },
       ],
     });
     return res.status(200).send(place);
@@ -70,11 +95,13 @@ router.get('/:id', async (req, res, next) => {
 
 router.patch('/wish/:placeId', async (req, res, next) => {
   try {
-    const place = await Place.findOne({ where: { id: parseInt(req.params.placeId, 10) }});
-    if(!place) {
+    const place = await Place.findOne({
+      where: { id: parseInt(req.params.placeId, 10) },
+    });
+    if (!place) {
       return res.status(404).send('존재하지 않는 장소입니다.');
     }
-    if(!req.user) {
+    if (!req.user) {
       return res.status(401).send('로그인이 필요합니다.');
     }
     await place.addWishers(req.user.id);
@@ -83,7 +110,7 @@ router.patch('/wish/:placeId', async (req, res, next) => {
     console.error(err);
     next(err);
   }
-})
+});
 
 // router.get('/search/address', async (req, res, next) => {
 
@@ -109,10 +136,11 @@ router.post('/directions', (req, res, next) => {
     { name: '서귀포의료원', lng: 126.5639216, lat: 33.2555355 },
     { name: '열린병원', lng: 126.5654153, lat: 33.2544709 },
     { name: '서귀포중학교', lng: 126.5699083, lat: 33.2477513 },
+    { name: '동홍동', lng: 126.56887224757, lat: 33.2579021227116 },
   ];
   axios
     .get(
-      `https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${startPoint}&goal=${endPoint}&option=traoptimal`,
+      `https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${startPoint}&goal=${endPoint}&waypoints=${wayPoints[4].lng},${wayPoints[4].lat}&option=traoptimal`,
       config
     )
     .then((response) => res.status(200).send(response.data))
