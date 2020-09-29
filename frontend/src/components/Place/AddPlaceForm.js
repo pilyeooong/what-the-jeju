@@ -20,7 +20,6 @@ const AddPlaceForm = () => {
   const [currentAddressesPage, setCurrentAddressesPage] = useState(1);
   const [addressesToShow, setAddressesToShow] = useState([]);
 
-
   const [searchValue, onChangeSearchValue] = useInput('');
   const [category, onChangeCategory] = useInput('');
   const [name, onChangeName] = useInput('');
@@ -29,6 +28,8 @@ const AddPlaceForm = () => {
 
 
   useEffect(() => {
+    setTotalAddressesPageNum([]);
+    setCurrentAddressesPage(1);
     let totalPageNum = Math.ceil(placeAddresses.length / 5);
     for(let i = 1; i <= totalPageNum; i++ ) {
       setTotalAddressesPageNum(prev => [...prev, i]);
