@@ -50,6 +50,7 @@ router.post('/', upload.none(), async (req, res, next) => {
       name: req.body.name,
       description: req.body.description,
       address: req.body.address,
+      UserId: req.user.id,
       lat: req.body.lat,
       lng: req.body.lng,
       fee: 0,

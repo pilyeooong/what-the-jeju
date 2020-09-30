@@ -1,5 +1,5 @@
 const DataTypes = require('sequelize');
-const { Model } = DataTypes
+const { Model } = DataTypes;
 
 module.exports = class Place extends Model {
   static init(sequelize) {
