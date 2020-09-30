@@ -26,8 +26,9 @@ router.get('/address/:placeName', async (req, res, next) => {
       { headers: { Authorization: `KakaoAK ${process.env.KAKAO_ID}` } }
     );
 
-    const addresses = result.data.documents.map((address) => {
+    const addresses = result.data.documents.map((address, index) => {
       const obj = {};
+      obj.idx = index;
       obj.address_name = address.address_name;
       obj.place_name = address.place_name;
       obj.lng = address.x;
@@ -49,6 +50,8 @@ router.post('/', upload.none(), async (req, res, next) => {
       name: req.body.name,
       description: req.body.description,
       address: req.body.address,
+      lat: req.body.lat,
+      lng: req.body.lng,
       fee: 0,
     });
     if (req.body.image) {

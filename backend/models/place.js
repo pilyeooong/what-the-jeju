@@ -21,6 +21,14 @@ module.exports = class Place extends Model {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
+      },
+      lat: {
+        type: DataTypes.STRING(30),
+        allowNull: true,
+      },
+      lng: {
+        type: DataTypes.STRING(30),
+        allowNull: true,
       }
     }, {
       modelName: 'Place',
