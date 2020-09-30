@@ -16,28 +16,38 @@ const AddPlaceForm = () => {
   const { imagePaths, placeAddresses } = useSelector((state) => state.place);
 
   const [click, setClick] = useState(false);
+  const [addressesToShow, setAddressesToShow] = useState([]);
   const [totalAddressesPageNum, setTotalAddressesPageNum] = useState([]);
   const [currentAddressesPage, setCurrentAddressesPage] = useState(1);
-  const [addressesToShow, setAddressesToShow] = useState([]);
 
   const [searchValue, onChangeSearchValue] = useInput('');
   const [category, onChangeCategory] = useInput('');
   const [name, onChangeName] = useInput('');
   const [description, onChangeDescription] = useInput('');
   const [address, setAddress] = useState('');
+  const [lat, setLat] = useState('');
+  const [lng, setLng] = useState('');
 
+  useEffect(() => {
+    console.log('lat', lat, 'lng', lng);
+  }, [lat, lng]);
 
   useEffect(() => {
     setTotalAddressesPageNum([]);
     setCurrentAddressesPage(1);
     let totalPageNum = Math.ceil(placeAddresses.length / 5);
-    for(let i = 1; i <= totalPageNum; i++ ) {
-      setTotalAddressesPageNum(prev => [...prev, i]);
+    for (let i = 1; i <= totalPageNum; i++) {
+      setTotalAddressesPageNum((prev) => [...prev, i]);
     }
   }, [placeAddresses]);
 
   useEffect(() => {
-    setAddressesToShow(placeAddresses.slice((currentAddressesPage - 1) * 5 , currentAddressesPage * 5));
+    setAddressesToShow(
+      placeAddresses.slice(
+        (currentAddressesPage - 1) * 5,
+        currentAddressesPage * 5
+      )
+    );
   }, [currentAddressesPage, placeAddresses]);
 
   const onSubmit = useCallback(
@@ -51,6 +61,8 @@ const AddPlaceForm = () => {
       formData.append('name', name);
       formData.append('description', description);
       formData.append('address', address);
+      formData.append('lat', lat);
+      formData.append('lng', lng);
       return dispatch({
         type: UPLOAD_PLACE_REQUEST,
         data: formData,
@@ -59,9 +71,10 @@ const AddPlaceForm = () => {
     [name, description, address, imagePaths]
   );
 
-  const onClickAddressPageNum = useCallback((number) => () => {
-    setCurrentAddressesPage(number);
-  }, []);
+  const onClickAddressPageNum = useCallback(
+    (number) => () => {
+      setCurrentAddressesPage(number);
+    }, []);
 
   const onChangeImages = useCallback((e) => {
     const imageData = new FormData();
@@ -89,10 +102,13 @@ const AddPlaceForm = () => {
     });
   }, [searchValue]);
 
-  const onClickSearchedAddress = useCallback((e) => {
+  const onClickSearchedAddress = useCallback((idx) => (e) => {
+    const selectedAddress = placeAddresses.find(place => place.idx === idx);
+    setLng(selectedAddress.lng);
+    setLat(selectedAddress.lat);
     setAddress(e.target.innerText);
     setClick(false);
-  }, [click]);
+  }, [placeAddresses, click]);
 
   return (
     <>
@@ -152,11 +168,19 @@ const AddPlaceForm = () => {
         />
         <button onClick={onClickAddressSearch}>검색</button>
         {addressesToShow.length !== 0
-          ? addressesToShow.map((address, index) => (
-              <div key={index} onClick={onClickSearchedAddress}><a>{address.address_name}</a></div>
+          ? addressesToShow.map((address, idx) => (
+              <div className="addressList" key={idx} onClick={onClickSearchedAddress(address.idx)}>
+                <a>{address.address_name}</a>
+                <span>{address.place_name}</span>
+              </div>
             ))
           : null}
-        {totalAddressesPageNum && totalAddressesPageNum.map(pageNum => <a onClick={onClickAddressPageNum(pageNum)}><span>{pageNum} </span></a>)}
+        {totalAddressesPageNum &&
+          totalAddressesPageNum.map((pageNum, idx) => (
+            <a key={idx} onClick={onClickAddressPageNum(pageNum)}>
+              <span>{pageNum} </span>
+            </a>
+          ))}
       </Modal>
     </>
   );

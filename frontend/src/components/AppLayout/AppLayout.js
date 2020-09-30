@@ -56,6 +56,7 @@ const AppLayout = ({ children }) => {
             <Link className="logo" to="/">
               왓더제주
             </Link>
+            <Link to="/place/add">업로드</Link>
             {me ? (
               <a className="authenticate" onClick={onClickLogOut}>
                 로그아웃
