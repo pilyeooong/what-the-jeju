@@ -30,7 +30,7 @@ router.get('/search/address/:placeName', async (req, res, next) => {
       const obj = {};
       obj.idx = index;
       obj.address_name = address.address_name;
-      obj.place_name = address.place_name;
+      obj.place_name = address.road_address.building_name;
       obj.lng = address.x;
       obj.lat = address.y;
       return obj;
@@ -89,7 +89,6 @@ router.post('/', upload.none(), async (req, res, next) => {
         await place.addImages(images);
       } else {
         const image = await Image.create({ src: req.body.image });
-        console.log(image);
         await place.addImages(image);
       }
     }

@@ -52,9 +52,12 @@ const AddPlaceForm = () => {
     );
   }, [currentAddressesPage, placeAddresses]);
 
-  const onChangeSearchType = useCallback((e) => {
-    setSearchType(e.target.value);
-  }, [searchType]);
+  const onChangeSearchType = useCallback(
+    (e) => {
+      setSearchType(e.target.value);
+    },
+    [searchType]
+  );
 
   const onSubmit = useCallback(
     (e) => {
@@ -80,7 +83,9 @@ const AddPlaceForm = () => {
   const onClickAddressPageNum = useCallback(
     (number) => () => {
       setCurrentAddressesPage(number);
-    }, []);
+    },
+    []
+  );
 
   const onChangeImages = useCallback((e) => {
     const imageData = new FormData();
@@ -101,23 +106,30 @@ const AddPlaceForm = () => {
     }
   }, [click]);
 
-  const onClickAddressSearch = useCallback(() => {
+  const onClickAddressSearch = useCallback(
+    (e) => {
+      e.preventDefault();
       dispatch({
         type: SEARCH_ADDRESS_REQUEST,
         data: {
           searchType,
-          searchValue
+          searchValue,
         },
       });
-  }, [searchValue, searchType]);
+    },
+    [searchValue, searchType]
+  );
 
-  const onClickSearchedAddress = useCallback((idx) => (e) => {
-    const selectedAddress = placeAddresses.find(place => place.idx === idx);
-    setLng(selectedAddress.lng);
-    setLat(selectedAddress.lat);
-    setAddress(e.target.innerText);
-    setClick(false);
-  }, [placeAddresses, click]);
+  const onClickSearchedAddress = useCallback(
+    (idx) => (e) => {
+      const selectedAddress = placeAddresses.find((place) => place.idx === idx);
+      setLng(selectedAddress.lng);
+      setLat(selectedAddress.lat);
+      setAddress(e.target.innerText);
+      setClick(false);
+    },
+    [placeAddresses, click]
+  );
 
   return (
     <>
@@ -169,20 +181,45 @@ const AddPlaceForm = () => {
         <button type="submit">업로드</button>
       </form>
       <Modal title={'주소검색'} isClicked={click} setClick={setClick}>
-        <div className="searchTypeButtons">
-          <input name="searchType" defaultChecked type="radio" value="address" onChange={onChangeSearchType} /><label>주소로 찾기</label>
-          <input name="searchType" type="radio" value="keyword" onChange={onChangeSearchType} /><label>키워드로 찾기</label>
-        </div>
-        <input
-          type="text"
-          value={searchValue}
-          onChange={onChangeSearchValue}
-          placeholder="주소를 입력해주세요"
-        />
-        <button onClick={onClickAddressSearch}>검색</button>
+        <form>
+          <div className="searchTypeButtons">
+            <input
+              name="searchType"
+              defaultChecked
+              type="radio"
+              value="address"
+              onChange={onChangeSearchType}
+            />
+            <label>도로명주소로 찾기</label>
+            <input
+              name="searchType"
+              type="radio"
+              value="keyword"
+              onChange={onChangeSearchType}
+            />
+            <label>키워드로 찾기</label>
+          </div>
+          <input
+            type="text"
+            value={searchValue}
+            onChange={onChangeSearchValue}
+            placeholder={
+              searchType === 'address'
+                ? '도로명 + 건물번호'
+                : '키워드를 입력해주세요'
+            }
+          />
+          <button type="submit" onClick={onClickAddressSearch}>
+            검색
+          </button>
+        </form>
         {addressesToShow.length !== 0
           ? addressesToShow.map((address, idx) => (
-              <div className="addressList" key={idx} onClick={onClickSearchedAddress(address.idx)}>
+              <div
+                className="addressList"
+                key={idx}
+                onClick={onClickSearchedAddress(address.idx)}
+              >
                 <a>{address.address_name}</a>
                 <span>{address.place_name}</span>
               </div>
