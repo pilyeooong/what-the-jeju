@@ -17,7 +17,33 @@ router.post('/images', upload.array('image'), async (req, res, next) => {
   return res.send(req.files.map((f) => f.filename));
 });
 
-router.get('/address/:placeName', async (req, res, next) => {
+router.get('/search/address/:placeName', async (req, res, next) => {
+  try {
+    const result = await axios.get(
+      `https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURI(
+        req.params.placeName
+      )}`,
+      { headers: { Authorization: `KakaoAK ${process.env.KAKAO_ID}` } }
+    );
+
+    const addresses = result.data.documents.map((address, index) => {
+      const obj = {};
+      obj.idx = index;
+      obj.address_name = address.address_name;
+      obj.place_name = address.place_name;
+      obj.lng = address.x;
+      obj.lat = address.y;
+      return obj;
+    });
+
+    return res.status(200).send(addresses);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+router.get('/search/keyword/:placeName', async (req, res, next) => {
   try {
     const result = await axios.get(
       `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURI(
@@ -60,7 +86,6 @@ router.post('/', upload.none(), async (req, res, next) => {
         const images = await Promise.all(
           req.body.image.map((image) => Image.create({ src: image }))
         );
-        console.log(images);
         await place.addImages(images);
       } else {
         const image = await Image.create({ src: req.body.image });
@@ -101,6 +126,11 @@ router.patch('/wish/:placeId', async (req, res, next) => {
   try {
     const place = await Place.findOne({
       where: { id: parseInt(req.params.placeId, 10) },
+      include: [{
+        model: User,
+        as: 'Wishers',
+        attributes: ['id']
+      }]
     });
     if (!place) {
       return res.status(404).send('존재하지 않는 장소입니다.');
@@ -116,9 +146,33 @@ router.patch('/wish/:placeId', async (req, res, next) => {
   }
 });
 
-// router.get('/search/address', async (req, res, next) => {
+router.patch('/unwish/:placeId', async (req, res, next) => {
+  try {
+    const place = await Place.findOne({
+      where: { id: parseInt(req.params.placeId, 10) },
+      include: [{
+        model: User,
+        as: 'Wishers',
+        attributes: ['id']
+      }]
+    });
+    if (!place) {
+      return res.status(404).send('존재하지 않는 장소입니다.');
+    }
+    if (!req.user) {
+      return res.status(401).send('로그인이 필요합니다.');
+    }
+    const isWished = place.Wishers.find(v => v.id === req.user.id);
+    if (isWished) {
+      await place.removeWishers(req.user.id);
+      return res.status(200).json({ placeId: place.id, userId: req.user.id });
+    }
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+})
 
-// });
 
 const config = {
   headers: {

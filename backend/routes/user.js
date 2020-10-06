@@ -4,7 +4,7 @@ const passport = require('passport');
 
 const axios = require('axios');
 
-const { User, Place } = require('../models');
+const { User, Place, Image } = require('../models');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 const router = express.Router();
@@ -20,7 +20,11 @@ router.get('/', async (req, res, next) => {
         include: [{
           model: Place,
           as: 'Wished',
-          attributes: ['id']
+          attributes: ['id', 'name'],
+          include: [{
+            model: Image,
+            attributes: ['id', 'src']
+          }]
         }]
       });
       return res.status(200).send(user);
