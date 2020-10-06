@@ -21,11 +21,6 @@ const PlaceList = () => {
     });
   }, []);
 
-  useEffect(() => {
-    console.log(window.innerWidth);
-  }, [window.innerWidth]);
-
-
   return (
     <div className="placesContainer">
       {loadPlaceLoading ? (

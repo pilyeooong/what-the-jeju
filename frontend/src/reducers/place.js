@@ -26,6 +26,11 @@ const initialState = {
   searchAddressError: null,
   placeAddresses: [],
 
+  // wish place
+  wishPlaceLoading: false,
+  wishPlaceDone: false,
+  wishPlaceError: null,
+  
   // direction API
   origin: {
     name: null,
@@ -62,6 +67,14 @@ export const GEOCODE_PLACE_FAILURE = 'GEOCODE_PLACE_FAILURE';
 export const SEARCH_ADDRESS_REQUEST = 'SEARCH_ADDRESS_REQUEST';
 export const SEARCH_ADDRESS_SUCCESS = 'SEARCH_ADDRESS_SUCCESS';
 export const SEARCH_ADDRESS_FAILURE = 'SEARCH_ADDRESS_FAILURE';
+
+export const WISH_PLACE_REQUEST = 'WISH_PLACE_REQUEST';
+export const WISH_PLACE_SUCCESS = 'WISH_PLACE_SUCCESS';
+export const WISH_PLACE_FAILURE = 'WISH_PLACE_FAILURE';
+
+export const UNWISH_PLACE_REQUEST = 'UNWISH_PLACE_REQUEST';
+export const UNWISH_PLACE_SUCCESS = 'UNWISH_PLACE_SUCCESS';
+export const UNWISH_PLACE_FAILURE = 'UNWISH_PLACE_FAILURE';
 
 
 const reducer = (state = initialState, action) => {
@@ -177,7 +190,38 @@ const reducer = (state = initialState, action) => {
         draft.searchAddressError = action.error;
         break;
       }
-
+      case WISH_PLACE_REQUEST: {
+        draft.wishPlaceLoading = true;
+        draft.wishPlaceDone = false;
+        draft.wishPlaceError = null;
+        break;
+      }
+      case WISH_PLACE_SUCCESS: {
+        draft.wishPlaceLoading = false;
+        draft.wishPlaceDone = true;
+        break;
+      }
+      case WISH_PLACE_FAILURE: {
+        draft.wishPlaceLoading = false;
+        draft.wishPlaceError = action.error;
+        break;
+      }
+      case UNWISH_PLACE_REQUEST: {
+        draft.wishPlaceLoading = true;
+        draft.wishPlaceDone = false;
+        draft.wishPlaceError = null;
+        break;
+      }
+      case UNWISH_PLACE_SUCCESS: {
+        draft.wishPlaceLoading = false;
+        draft.wishPlaceDone = true;
+        break;
+      }
+      case UNWISH_PLACE_FAILURE: {
+        draft.wishPlaceLoading = false;
+        draft.wishPlaceError = action.error;
+        break;
+      }
       default:
         break;
     }

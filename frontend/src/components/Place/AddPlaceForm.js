@@ -24,7 +24,9 @@ const AddPlaceForm = () => {
   const [category, onChangeCategory] = useInput('');
   const [name, onChangeName] = useInput('');
   const [description, onChangeDescription] = useInput('');
+
   const [address, setAddress] = useState('');
+  const [searchType, setSearchType] = useState('address');
   const [lat, setLat] = useState('');
   const [lng, setLng] = useState('');
 
@@ -49,6 +51,10 @@ const AddPlaceForm = () => {
       )
     );
   }, [currentAddressesPage, placeAddresses]);
+
+  const onChangeSearchType = useCallback((e) => {
+    setSearchType(e.target.value);
+  }, [searchType]);
 
   const onSubmit = useCallback(
     (e) => {
@@ -96,11 +102,14 @@ const AddPlaceForm = () => {
   }, [click]);
 
   const onClickAddressSearch = useCallback(() => {
-    dispatch({
-      type: SEARCH_ADDRESS_REQUEST,
-      data: searchValue,
-    });
-  }, [searchValue]);
+      dispatch({
+        type: SEARCH_ADDRESS_REQUEST,
+        data: {
+          searchType,
+          searchValue
+        },
+      });
+  }, [searchValue, searchType]);
 
   const onClickSearchedAddress = useCallback((idx) => (e) => {
     const selectedAddress = placeAddresses.find(place => place.idx === idx);
@@ -160,6 +169,10 @@ const AddPlaceForm = () => {
         <button type="submit">업로드</button>
       </form>
       <Modal title={'주소검색'} isClicked={click} setClick={setClick}>
+        <div className="searchTypeButtons">
+          <input name="searchType" defaultChecked type="radio" value="address" onChange={onChangeSearchType} /><label>주소로 찾기</label>
+          <input name="searchType" type="radio" value="keyword" onChange={onChangeSearchType} /><label>키워드로 찾기</label>
+        </div>
         <input
           type="text"
           value={searchValue}

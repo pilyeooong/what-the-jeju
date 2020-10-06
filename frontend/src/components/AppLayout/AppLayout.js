@@ -58,9 +58,12 @@ const AppLayout = ({ children }) => {
             </Link>
             <Link to="/place/add">업로드</Link>
             {me ? (
-              <a className="authenticate" onClick={onClickLogOut}>
-                로그아웃
-              </a>
+              <>
+                <Link to="/profile">프로필</Link>
+                <a className="authenticate" onClick={onClickLogOut}>
+                  로그아웃
+                </a>
+              </>
             ) : (
               <>
                 <a className="authenticate login" onClick={onToggleLoginModal}>
@@ -92,7 +95,7 @@ const AppLayout = ({ children }) => {
           </div>
           <div className="loginModal__links">
             <button className="kakaoLogin__link" onClick={onClickKakaoLogin}>
-              <i class="fas fa-comment"></i>
+              <i className="fas fa-comment"></i>
               <a>카카오로 시작하기</a>
             </button>
             <Link to="/auth/login"><span>이메일로 시작하기</span></Link>
