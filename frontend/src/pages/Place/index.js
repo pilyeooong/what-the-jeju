@@ -10,7 +10,7 @@ const PlaceRouter = ({ match }) => {
     <>
       <Switch>
         <Route exact path={match.url + '/add'} component={AddPlace} />
-        <Route exact path={match.url + '/direction'} component={Direction} />
+        <Route exact path={match.url + '/directions'} component={Direction} />
         <Route exact path={match.url + '/:placeId'} component={PlaceDetail} />
       </Switch>
     </>

@@ -55,6 +55,7 @@ export const LOAD_PLACE_FAILURE = 'LOAD_PLACE_FAILURE';
 export const UPLOAD_PLACE_REQUEST = 'UPLOAD_PLACE_REQUEST';
 export const UPLOAD_PLACE_SUCCESS = 'UPLOAD_PLACE_SUCCESS';
 export const UPLOAD_PLACE_FAILURE = 'UPLOAD_PLACE_FAILURE';
+export const UPLOAD_PLACE_DONE = 'UPLOAD_PLACE_DONE';
 
 export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST';
 export const UPLOAD_IMAGES_SUCCESS = 'UPLOAD_IMAGES_SUCCESS';
@@ -63,6 +64,10 @@ export const UPLOAD_IMAGES_FAILURE = 'UPLOAD_IMAGES_FAILURE';
 export const GEOCODE_PLACE_REQUEST = 'GEOCODE_PLACE_REQUEST';
 export const GEOCODE_PLACE_SUCCESS = 'GEOCODE_PLACE_SUCCESS';
 export const GEOCODE_PLACE_FAILURE = 'GEOCODE_PLACE_FAILURE';
+
+export const SEARCH_DIRECTION_REQUEST = 'SEARCH_DIRECTION_REQUEST';
+export const SEARCH_DIRECTION_SUCCESS = 'SEARCH_DIRECTION_SUCCESS';
+export const SEARCH_DIRECTION_FAILURE = 'SEARCH_DIRECTION_FAILURE';
 
 export const SEARCH_ADDRESS_REQUEST = 'SEARCH_ADDRESS_REQUEST';
 export const SEARCH_ADDRESS_SUCCESS = 'SEARCH_ADDRESS_SUCCESS';
@@ -132,6 +137,10 @@ const reducer = (state = initialState, action) => {
         draft.uploadPlaceDone = false;
         draft.uploadPlaceError = action.error;
         break;
+      }
+      case UPLOAD_PLACE_DONE: {
+        draft.imagePaths = [];
+        draft.uploadPlaceDone = false;
       }
       case UPLOAD_IMAGES_REQUEST: {
         draft.uploadImageLoading = true;

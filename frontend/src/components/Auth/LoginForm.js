@@ -13,8 +13,8 @@ import './LoginForm.scss';
 const LoginForm = () => {
   const dispatch = useDispatch();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('pilyeooong2@gmail.com');
+  const [password, setPassword] = useState('1234');
 
   const onChangePassword = useCallback((e) => {
     setPassword(e.target.value);

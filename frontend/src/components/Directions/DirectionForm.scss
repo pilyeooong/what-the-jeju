@@ -1,0 +1,19 @@
+@import '../../global-styles/mixin';
+
+.wishedList {
+  display: flex;
+  overflow-x: scroll;
+  height: 130px;
+  .wishPlace {
+    display: flex;
+    flex-direction: column;
+    
+    min-width: 100px;
+    height: 100px;
+
+    img {
+      width: 100px;
+      height: 90%;
+    }
+  }
+}

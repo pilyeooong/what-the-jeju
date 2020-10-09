@@ -22,6 +22,11 @@ const initialState = {
   logOutLoading: false,
   logOutDone: false,
   logOutError: null,
+
+  // 도민 인증
+  checkJejuNativeLoading: false,
+  checkJejuNativeDone: false,
+  checkJejuNativeError: null,
 }
 
 export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST';
@@ -105,6 +110,21 @@ const reducer = (state = initialState, action) => {
         draft.me = null;
         break;
       case LOG_OUT_FAILURE:
+        draft.logOutLoading = false;
+        draft.logOutDone = false;
+        draft.logOutError = action.error;
+        break;
+      case CHECK_JEJU_NATIVE_REQUEST:
+        draft.logOutLoading = true;
+        draft.logOutDone = false;
+        draft.logOutError = null;
+        break;
+      case CHECK_JEJU_NATIVE_SUCCESS:
+        draft.logOutLoading = false;
+        draft.logOutDone = true;
+        draft.me.jejuNative = action.data;
+        break;
+      case CHECK_JEJU_NATIVE_FAILURE:
         draft.logOutLoading = false;
         draft.logOutDone = false;
         draft.logOutError = action.error;

@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import AddPlaceForm from '../../components/Place/AddPlaceForm';
+import { UPLOAD_PLACE_DONE } from '../../reducers/place';
 
 const AddPlace = () => {
   const history = useHistory();
+  const dispatch = useDispatch();
   const { uploadPlaceDone } = useSelector(state => state.place);
   const { me } = useSelector(state => state.user);
 
@@ -12,6 +14,9 @@ const AddPlace = () => {
   useEffect(() => {
     if (uploadPlaceDone) {
       history.push('/');
+      dispatch({
+        type: UPLOAD_PLACE_DONE
+      })
     }
   }, [uploadPlaceDone]);
 

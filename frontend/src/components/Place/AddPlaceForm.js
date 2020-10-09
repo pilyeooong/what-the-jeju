@@ -31,10 +31,6 @@ const AddPlaceForm = () => {
   const [lng, setLng] = useState('');
 
   useEffect(() => {
-    console.log('lat', lat, 'lng', lng);
-  }, [lat, lng]);
-
-  useEffect(() => {
     setTotalAddressesPageNum([]);
     setCurrentAddressesPage(1);
     let totalPageNum = Math.ceil(placeAddresses.length / 5);
@@ -140,9 +136,9 @@ const AddPlaceForm = () => {
           onChange={onChangeCategory}
         >
           <option defaultValue>------------</option>
-          <option value="1">카페</option>
-          <option value="2">해변</option>
-          <option value="3">박물관</option>
+          <option value="cafe">카페</option>
+          <option value="ocean">해변</option>
+          <option value="museum">박물관</option>
         </select>
         <input
           type="text"

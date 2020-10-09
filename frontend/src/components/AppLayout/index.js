@@ -7,7 +7,7 @@ import { LOG_OUT_REQUEST, LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 
 const AppLayout = ({ children }) => {
   const dispatch = useDispatch();
-  const { me } = useSelector((state) => state.user);
+  const me = useSelector((state) => state.user.me);
   const [modal, setModal] = useState(false);
 
   const loginBtn = useRef();
@@ -56,9 +56,10 @@ const AppLayout = ({ children }) => {
             <Link className="logo" to="/">
               왓더제주
             </Link>
-            <Link to="/place/add">업로드</Link>
             {me ? (
               <>
+                {me.jejuNative && <Link to="/place/add">업로드</Link>}
+                <Link to="/place/directions">동선 짜기</Link>
                 <Link to="/profile">프로필</Link>
                 <a className="authenticate" onClick={onClickLogOut}>
                   로그아웃

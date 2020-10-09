@@ -4,7 +4,7 @@ import { LOAD_PLACE_REQUEST, UNWISH_PLACE_REQUEST, WISH_PLACE_REQUEST } from '..
 
 import ImageSlider from '../../components/ImageSlider';
 import PlaceInfo from '../../components/Place/PlaceInfo';
-import AppLayout from '../../components/AppLayout/AppLayout';
+import AppLayout from '../../components/AppLayout';
 
 import './PlaceDetail.scss';
 

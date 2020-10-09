@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { GEOCODE_PLACE_REQUEST } from '../../reducers/place';
+import { GEOCODE_PLACE_REQUEST, SEARCH_DIRECTION_REQUEST } from '../../reducers/place';
 
 const Style = {
   width: '100%',
   height: '400px',
 };
 
-const Map = () => {
-  const [place, setPlace] = useState('태평로 549');
+const Map = ({ wayPoints }) => {
+  const [searchedOrigin, setSearchedOrigin] = useState('');
+  const [searchedDestination, setSearchedDestination] = useState('');
+
   const [currentMap, setCurrentMap] = useState(null);
 
-  const dispatch = useDispatch();
-  const { destination } = useSelector((state) => state.place);
+  const destination = useSelector(state => state.place.destination);
+  const origin = useSelector(state => state.place.origin);
 
-  const onChangePlace = (e) => {
-    setPlace(e.target.value);
-  };
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -37,31 +37,80 @@ const Map = () => {
     };
   }, []);
 
-  const onSubmitPlace = (e) => {
-    e.preventDefault();
-    dispatch({
-      type: GEOCODE_PLACE_REQUEST,
-      data: place,
-    });
-  };
+  useEffect(() => {
+    if (origin.lat && origin.lng) {
+      const findPlace = new window.naver.maps.LatLng(
+        origin.lat,
+        origin.lng
+      );
+      currentMap.panTo(findPlace);
+    }
+  }, [origin.lat, origin.lng]);
 
-  // useEffect(() => {
-  //   if (destination.lat && destination.lng) {
-  //     const findPlace = new window.naver.maps.LatLng(
-  //       destination.lat,
-  //       destination.lng
-  //     );
-  //     currentMap.panTo(findPlace);
-  //   }
-  // }, [destination.lat, destination.lng]);
+  useEffect(() => {
+    if (destination.lat && destination.lng) {
+      const findPlace = new window.naver.maps.LatLng(
+        destination.lat,
+        destination.lng
+      );
+      currentMap.panTo(findPlace);
+    }
+  }, [destination.lat, destination.lng]);
+
+  const onSubmitPlace = useCallback((type) => (e) => {
+    e.preventDefault();
+    if(type === 'origin') {
+      dispatch({
+        type: GEOCODE_PLACE_REQUEST,
+        data: {
+          type: 'origin',
+          place: searchedOrigin
+        },
+      });
+    } else {
+      dispatch({
+        type: GEOCODE_PLACE_REQUEST,
+        data: {
+          type: 'destination',
+          place: searchedDestination
+        }
+      })
+    }
+  }, [searchedOrigin, searchedDestination]);
+
+  const onChangeOrigin = useCallback((e) => {
+    setSearchedOrigin(e.target.value);
+  }, []);
+
+  const onChangeDestination = useCallback((e) => {
+    setSearchedDestination(e.target.value);
+  }, []);
+
+  const onSearchDirection = useCallback(() => {
+    dispatch({
+      type: SEARCH_DIRECTION_REQUEST,
+      data: {
+        origin,
+        destination,
+        wayPoints,
+      }
+    })
+  }, [origin, destination, wayPoints]);
 
   return (
     <>
-      <form action="" onSubmit={onSubmitPlace}>
-        <input type="text" value={place} onChange={onChangePlace} />
-        <button type="submit">찾기</button>
-      </form>
+      <div>
+        <label htmlFor="">출발지</label>
+        <input type="text" value={searchedOrigin} onChange={onChangeOrigin} />
+        <button onClick={onSubmitPlace('origin')}>찾기</button>
+      </div>
+      <div>
+        <label htmlFor="">목적지</label>
+        <input type="text" value={searchedDestination} onChange={onChangeDestination} />
+        <button onClick={onSubmitPlace('destination')}>찾기</button>
+      </div>
       <div id="map" style={Style}></div>
+      <button onClick={onSearchDirection}>동선 검색</button>
     </>
   );
 };

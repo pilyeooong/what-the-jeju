@@ -26,6 +26,9 @@ import {
   UNWISH_PLACE_REQUEST,
   UNWISH_PLACE_SUCCESS,
   UNWISH_PLACE_FAILURE,
+  SEARCH_DIRECTION_REQUEST,
+  SEARCH_DIRECTION_SUCCESS,
+  SEARCH_DIRECTION_FAILURE,
 } from '../reducers/place';
 import { ADD_WISH_PLACE_TO_ME, REMOVE_WISH_PLACE_TO_ME } from '../reducers/user';
 
@@ -132,11 +135,12 @@ function geocodeAPI(data) {
 
 function* geocode(action) {
   try {
-    const result = yield call(geocodeAPI, action.data);
-    console.log(result);
+    const type = action.data.type;
+    const result = yield call(geocodeAPI, action.data.place);
     yield put({
       type: GEOCODE_PLACE_SUCCESS,
       data: {
+        type,
         lat: result.data.addresses[0].y,
         lng: result.data.addresses[0].x,
       },
@@ -152,6 +156,30 @@ function* geocode(action) {
 
 function* watchGeocode() {
   yield takeLatest(GEOCODE_PLACE_REQUEST, geocode);
+}
+
+function searchDirectionAPI(data) {
+  return axios.post(`/place/directions`, data);
+}
+
+function* searchDirection(action) {
+  try {
+    const result = yield call(searchDirectionAPI, action.data);
+    console.log(result);
+    yield put({
+      type: SEARCH_DIRECTION_SUCCESS,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: SEARCH_DIRECTION_FAILURE,
+      error: err,
+    });
+  }
+}
+
+function* watchSearchDirection() {
+  yield takeLatest(SEARCH_DIRECTION_REQUEST, searchDirection);
 }
 
 function searchAddressAPI(data) {
@@ -249,6 +277,7 @@ function* watchUnWishPlace() {
 export default function* placeSaga() {
   yield all([
     fork(watchGeocode),
+    fork(watchSearchDirection),
     fork(watchLoadPlaces),
     fork(watchUploadPlace),
     fork(watchUploadImages),

@@ -118,7 +118,7 @@ function* watchLogOut() {
 }
 
 function checkJejuNativeAPI(data) {
-  return axios.post('/user/check', data);
+  return axios.post('/user/check/jejunative', data);
 }
 
 function* checkJejuNative(action) {
