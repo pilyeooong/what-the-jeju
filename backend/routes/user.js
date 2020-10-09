@@ -7,6 +7,8 @@ const axios = require('axios');
 const { User, Place, Image } = require('../models');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
+const { naverConfig } = require('./apiHeaders');
+
 const router = express.Router();
 
 router.get('/', async (req, res, next) => {
@@ -17,15 +19,19 @@ router.get('/', async (req, res, next) => {
         attributes: {
           exclude: ['password'],
         },
-        include: [{
-          model: Place,
-          as: 'Wished',
-          attributes: ['id', 'name'],
-          include: [{
-            model: Image,
-            attributes: ['id', 'src']
-          }]
-        }]
+        include: [
+          {
+            model: Place,
+            as: 'Wished',
+            attributes: ['id', 'name', 'lat', 'lng'],
+            include: [
+              {
+                model: Image,
+                attributes: ['id', 'src'],
+              },
+            ],
+          },
+        ],
       });
       return res.status(200).send(user);
     } else {
@@ -44,7 +50,11 @@ router.post('/login', async (req, res, next) => {
       return next(err);
     }
     if (info) {
-      return res.status(401).send('해당 이메일로 가입된 계정이 없거나 비밀번호가 일치하지 않습니다.');
+      return res
+        .status(401)
+        .send(
+          '해당 이메일로 가입된 계정이 없거나 비밀번호가 일치하지 않습니다.'
+        );
     }
     return req.login(user, async (loginErr) => {
       if (loginErr) {
@@ -88,25 +98,23 @@ router.post('/', async (req, res, next) => {
 });
 
 // localhost나 https에서만 동작
-router.post('/check', async (req, res, next) => {
-  const config = {
-    headers: {
-      'X-NCP-APIGW-API-KEY-ID': `${process.env.NAVER_MAP_CLIENT}`,
-      'X-NCP-APIGW-API-KEY': `${process.env.NAVER_MAP_CLIENT_SECRET}`,
-    },
-  };
+router.post('/check/jejunative', async (req, res, next) => {
+  if(!req.user) {
+    return res.status(401).send('로그인이 필요합니다.');
+  }
 
   const { lat, lng } = req.body;
-  axios
-    .get(
-      `https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?request=coordsToaddr&coords=${lng},${lat}&sourcecrs=epsg:4326&output=json&orders=legalcode`,
-      config
-    )
-    .then((response) => res.status(200).send(response.data))
-    .catch((err) => {
-      console.error(err);
-      next(err);
-    });
+  try {
+    const result = await axios.get(`https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?request=coordsToaddr&coords=${lng},${lat}&sourcecrs=epsg:4326&output=json&orders=legalcode`, naverConfig);
+    if (result.data.results[0].region.area1.name === '제주특별자치도') {
+      await User.update({ jejuNative: 1 }, { where: { id: req.user.id }});
+      return res.status(200).send(true);
+    }
+    return res.status(200).send(false);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
 });
 
 module.exports = router;

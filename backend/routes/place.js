@@ -1,8 +1,9 @@
 const express = require('express');
 const fs = require('fs');
 const axios = require('axios');
-const { Place, Image, User } = require('../models');
+const { Place, Image, User, Category } = require('../models');
 const { upload } = require('./middlewares');
+const { naverConfig, kakaoConfig } = require('./apiHeaders');
 
 const router = express.Router();
 
@@ -23,7 +24,7 @@ router.get('/search/address/:placeName', async (req, res, next) => {
       `https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURI(
         req.params.placeName
       )}`,
-      { headers: { Authorization: `KakaoAK ${process.env.KAKAO_ID}` } }
+      kakaoConfig
     );
 
     const addresses = result.data.documents.map((address, index) => {
@@ -49,7 +50,7 @@ router.get('/search/keyword/:placeName', async (req, res, next) => {
       `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURI(
         req.params.placeName
       )}`,
-      { headers: { Authorization: `KakaoAK ${process.env.KAKAO_ID}` } }
+      kakaoConfig
     );
 
     const addresses = result.data.documents.map((address, index) => {
@@ -71,8 +72,9 @@ router.get('/search/keyword/:placeName', async (req, res, next) => {
 
 router.post('/', upload.none(), async (req, res, next) => {
   try {
+    const category = await Category.findOne({ where: { name: req.body.category }});
     const place = await Place.create({
-      CategoryId: req.body.category,
+      CategoryId: category.id,
       name: req.body.name,
       description: req.body.description,
       address: req.body.address,
@@ -172,39 +174,28 @@ router.patch('/unwish/:placeId', async (req, res, next) => {
   }
 })
 
-
-const config = {
-  headers: {
-    'X-NCP-APIGW-API-KEY-ID': `${process.env.NAVER_MAP_CLIENT}`,
-    'X-NCP-APIGW-API-KEY': `${process.env.NAVER_MAP_CLIENT_SECRET}`,
-  },
-};
-
-router.post('/directions', (req, res, next) => {
-  const {
-    data: { origin, destination },
-  } = req.body;
+router.post('/directions', async (req, res, next) => {
+  // const wayPoints = [
+  //   { name: '정방폭포', lng: 126.5730501, lat: 33.244748 },
+  //   { name: '서귀포의료원', lng: 126.5639216, lat: 33.2555355 },
+  //   { name: '열린병원', lng: 126.5654153, lat: 33.2544709 },
+  //   { name: '서귀포중학교', lng: 126.5699083, lat: 33.2477513 },
+  //   { name: '동홍동', lng: 126.56887224757, lat: 33.2579021227116 },
+  // ];
+  const { origin, destination, wayPoints: tempWayPoints } = req.body;
+  const wayPoints = tempWayPoints.map(wayPoint => ({ name: wayPoint.name, lng: wayPoint.lng, lat: wayPoint.lat }));
   const startPoint = `${parseFloat(origin.lng)},${parseFloat(origin.lat)}`;
   const endPoint = `${parseFloat(destination.lng)},${parseFloat(
     destination.lat
   )}`;
-  const wayPoints = [
-    { name: '정방폭포', lng: 126.5730501, lat: 33.244748 },
-    { name: '서귀포의료원', lng: 126.5639216, lat: 33.2555355 },
-    { name: '열린병원', lng: 126.5654153, lat: 33.2544709 },
-    { name: '서귀포중학교', lng: 126.5699083, lat: 33.2477513 },
-    { name: '동홍동', lng: 126.56887224757, lat: 33.2579021227116 },
-  ];
-  axios
-    .get(
-      `https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${startPoint}&goal=${endPoint}&waypoints=${wayPoints[4].lng},${wayPoints[4].lat}&option=traoptimal`,
-      config
-    )
-    .then((response) => res.status(200).send(response.data))
-    .catch((err) => {
-      console.error(err);
-      next(err);
-    });
+  try {
+    const result = await axios.get(`https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${startPoint}&goal=${endPoint}&waypoints=${wayPoints[0].lng},${wayPoints[0].lat}&option=traoptimal`, naverConfig);
+    console.log(result.data);
+    return res.status(200).send({ origin, destination, wayPoints });
+  } catch(err) {
+    console.error(err);
+    next(err);
+  }
 });
 
 router.get('/geocode/:place', async (req, res, next) => {
@@ -214,7 +205,7 @@ router.get('/geocode/:place', async (req, res, next) => {
       `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=${encodeURI(
         place
       )}`,
-      config
+      naverConfig
     )
     .then((response) => res.status(200).send(response.data))
     .catch((err) => {
