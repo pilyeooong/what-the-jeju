@@ -32,6 +32,9 @@ const initialState = {
   wishPlaceError: null,
   
   // direction API
+  searchDirectionLoading: false,
+  searchDirectionDone: false,
+  searchDirectionError: null,
   origin: {
     name: null,
     lat: 0,
@@ -41,7 +44,8 @@ const initialState = {
     name: null,
     lat: 0,
     lng: 0,
-  }
+  },
+  directionPaths: [],
 }
 
 export const LOAD_PLACES_REQUEST = 'LOAD_PLACES_REQUEST';
@@ -197,6 +201,24 @@ const reducer = (state = initialState, action) => {
       case SEARCH_ADDRESS_FAILURE: {
         draft.searchAddressLoading = false;
         draft.searchAddressError = action.error;
+        break;
+      }
+      case SEARCH_DIRECTION_REQUEST: {
+        draft.searchDirectionLoading = true;
+        draft.searchDirectionDone = false;
+        draft.searchDirectionError = null;
+        draft.directionPaths = [];
+        break;
+      }
+      case SEARCH_DIRECTION_SUCCESS: {
+        draft.searchDirectionLoading = false;
+        draft.searchDirectionDone = true;
+        draft.directionPaths = action.data.path;
+        break;
+      }
+      case SEARCH_DIRECTION_FAILURE: {
+        draft.searchDirectionLoading = false;
+        draft.searchDirectionError = action.error;
         break;
       }
       case WISH_PLACE_REQUEST: {

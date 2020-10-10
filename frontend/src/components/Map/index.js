@@ -15,6 +15,7 @@ const Map = ({ wayPoints }) => {
 
   const destination = useSelector(state => state.place.destination);
   const origin = useSelector(state => state.place.origin);
+  const directionPaths = useSelector(state => state.place.directionPaths);
 
   const dispatch = useDispatch();
 
@@ -44,8 +45,12 @@ const Map = ({ wayPoints }) => {
         origin.lng
       );
       currentMap.panTo(findPlace);
+      new window.naver.maps.Marker({
+        position: new window.naver.maps.LatLng(origin.lat, origin.lng),
+        map: currentMap
+      });
     }
-  }, [origin.lat, origin.lng]);
+  }, [origin.lat, origin.lng, currentMap]);
 
   useEffect(() => {
     if (destination.lat && destination.lng) {
@@ -54,8 +59,24 @@ const Map = ({ wayPoints }) => {
         destination.lng
       );
       currentMap.panTo(findPlace);
+      new window.naver.maps.Marker({
+        position: new window.naver.maps.LatLng(destination.lat, destination.lng),
+        map: currentMap
+      });
     }
   }, [destination.lat, destination.lng]);
+
+  useEffect(() => {
+    if (directionPaths.length !== 0) {
+      new window.naver.maps.Polyline({
+        map: currentMap,
+        path: directionPaths,
+        strokeColor: 'red',
+        strokeWeight: 3
+      });
+      wayPoints.forEach(wayPoint => new window.naver.maps.Marker({ position: new window.naver.maps.LatLng(wayPoint.lat, wayPoint.lng), map: currentMap }))
+    }
+  }, [wayPoints, currentMap, directionPaths]);
 
   const onSubmitPlace = useCallback((type) => (e) => {
     e.preventDefault();
@@ -87,6 +108,11 @@ const Map = ({ wayPoints }) => {
   }, []);
 
   const onSearchDirection = useCallback(() => {
+    if (wayPoints.length === 0) {
+      alert('동선에 포함 시킬 핫플레이스를 추가해주세요');
+      return;
+    }
+    console.log(wayPoints);
     dispatch({
       type: SEARCH_DIRECTION_REQUEST,
       data: {

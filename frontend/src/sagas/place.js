@@ -165,9 +165,10 @@ function searchDirectionAPI(data) {
 function* searchDirection(action) {
   try {
     const result = yield call(searchDirectionAPI, action.data);
-    console.log(result);
+    console.log(result.data);
     yield put({
       type: SEARCH_DIRECTION_SUCCESS,
+      data: result.data
     });
   } catch (err) {
     console.error(err);

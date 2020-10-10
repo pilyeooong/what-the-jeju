@@ -182,16 +182,21 @@ router.post('/directions', async (req, res, next) => {
   //   { name: '서귀포중학교', lng: 126.5699083, lat: 33.2477513 },
   //   { name: '동홍동', lng: 126.56887224757, lat: 33.2579021227116 },
   // ];
-  const { origin, destination, wayPoints: tempWayPoints } = req.body;
-  const wayPoints = tempWayPoints.map(wayPoint => ({ name: wayPoint.name, lng: wayPoint.lng, lat: wayPoint.lat }));
-  const startPoint = `${parseFloat(origin.lng)},${parseFloat(origin.lat)}`;
-  const endPoint = `${parseFloat(destination.lng)},${parseFloat(
-    destination.lat
-  )}`;
+  const { origin, destination, wayPoints } = req.body;
+  let wayPointsParams = '';
+  for (let i = 0; i < wayPoints.length; i++){
+      if (i === wayPoints.length - 1) {
+          wayPointsParams += `${wayPoints[i].lng},${wayPoints[i].lat}`;
+      } else {
+          wayPointsParams += `${wayPoints[i].lng},${wayPoints[i].lat}|`;
+      }
+  }
+  console.log(wayPointsParams);
+  const startPoint = `${origin.lng},${origin.lat}`;
+  const endPoint = `${destination.lng},${destination.lat}`;
   try {
-    const result = await axios.get(`https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${startPoint}&goal=${endPoint}&waypoints=${wayPoints[0].lng},${wayPoints[0].lat}&option=traoptimal`, naverConfig);
-    console.log(result.data);
-    return res.status(200).send({ origin, destination, wayPoints });
+    const result = await axios.get(`https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${startPoint}&goal=${endPoint}&waypoints=${wayPointsParams}&option=traoptimal`, naverConfig);
+    return res.status(200).send(result.data.route.traoptimal[0]);
   } catch(err) {
     console.error(err);
     next(err);
