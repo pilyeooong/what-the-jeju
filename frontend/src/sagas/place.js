@@ -47,7 +47,7 @@ function* loadPlaces(action) {
     console.error(err);
     yield put({
       type: LOAD_PLACES_FAILURE,
-      error: err,
+      error: err.response.data,
     });
   }
 }
@@ -72,7 +72,7 @@ function* loadPlace(action) {
     console.error(err);
     yield put({
       type: LOAD_PLACE_FAILURE,
-      error: err,
+      error: err.response.data,
     });
   }
 }
@@ -96,7 +96,7 @@ function* uploadPlace(action) {
     console.error(err);
     yield put({
       type: UPLOAD_PLACE_FAILURE,
-      error: err,
+      error: err.response.data,
     });
   }
 }
@@ -120,7 +120,7 @@ function* uploadImages(action) {
     console.error(err);
     yield put({
       type: UPLOAD_IMAGES_FAILURE,
-      error: err,
+      error: err.response.data,
     });
   }
 }
@@ -149,7 +149,7 @@ function* geocode(action) {
     console.error(err);
     yield put({
       type: GEOCODE_PLACE_FAILURE,
-      error: err,
+      error: err.response.data,
     });
   }
 }
@@ -174,7 +174,7 @@ function* searchDirection(action) {
     console.error(err);
     yield put({
       type: SEARCH_DIRECTION_FAILURE,
-      error: err,
+      error: err.response.data,
     });
   }
 }
@@ -208,7 +208,7 @@ function* searchAddress(action) {
     console.error(err);
     yield put({
       type: SEARCH_ADDRESS_FAILURE,
-      error: err,
+      error: err.response.data,
     });
   }
 }
@@ -237,7 +237,7 @@ function* wishPlace(action) {
     console.error(err);
     yield put({
       type: WISH_PLACE_FAILURE,
-      error: err,
+      error: err.response.data,
     });
   }
 }
@@ -266,7 +266,7 @@ function* unWishPlace(action) {
     console.error(err);
     yield put({
       type: UNWISH_PLACE_FAILURE,
-      error: err,
+      error: err.response.data,
     });
   }
 }

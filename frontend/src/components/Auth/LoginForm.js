@@ -2,8 +2,6 @@ import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import useInput from '../../hooks/useInput';
-
 import { LOG_IN_REQUEST } from '../../reducers/user';
 
 import Logo from '../Logo/AuthPage';
@@ -51,7 +49,7 @@ const LoginForm = () => {
 
   return (
     <>
-      <Logo />
+      <Logo title={'왓더제주'}/>
       <div className="form-container">
         <form onSubmit={onClickLogin}>
           <div className="form-input form-email">

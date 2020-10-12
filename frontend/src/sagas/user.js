@@ -124,7 +124,6 @@ function checkJejuNativeAPI(data) {
 function* checkJejuNative(action) {
   try {
     const result = yield call(checkJejuNativeAPI, action.data);
-    console.log(result);
     yield put({
       type: CHECK_JEJU_NATIVE_SUCCESS,
       data: result.data,

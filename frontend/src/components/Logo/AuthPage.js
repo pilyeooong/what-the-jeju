@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 
 import './AuthPage.scss';
 
-const Logo = () => {
+const Logo = ({ title }) => {
   return (
     <header className="logo__header">
       <Link to="/">
-        <div className="logo">왓더제주</div>
+        <div className="logo">{title}</div>
       </Link>
     </header>
   );

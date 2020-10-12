@@ -93,6 +93,8 @@ const reducer = (state = initialState, action) => {
         draft.loadPlaceLoading = true;
         draft.loadPlaceDone = false;
         draft.places = [];
+        draft.placeAddresses = [];
+        draft.imagePaths = [];
         break;
       }
       case LOAD_PLACES_SUCCESS: {

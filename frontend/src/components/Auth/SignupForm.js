@@ -13,19 +13,57 @@ const SignupForm = () => {
   const history = useHistory();
   const { signupDone } = useSelector((state) => state.user);
 
-  const [email, onChangeEmail] = useInput('');
-  const [nickname, onChangeNickname] = useInput('');
-  const [password, onChangePassword] = useInput('');
+  const [email, setEmail] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
   const [passwordError, setPasswordError] = useState(false);
+
+  useEffect(() => {
+    if (signupDone) {
+      history.push('/auth/login');
+    }
+  }, [signupDone]);
+
+  useEffect(() => {
+    if (passwordCheck.length !== 0 && password === passwordCheck) {
+      document.querySelector('.form-password-check i').style.color = 'green';
+    } else if(passwordCheck.length !== 0 && password !== passwordCheck) {
+      document.querySelector('.form-password-check i').style.color = 'red';
+    }
+  }, [password, passwordCheck]);
+
+  const onChangeEmail = useCallback((e) => {
+    const { target : { validity : { typeMismatch }}} = e;
+    setEmail(e.target.value);
+    if (!typeMismatch) {
+      document.querySelector('.form-email i').style.color = 'green';
+    } else {
+      document.querySelector('.form-email i').style.color = 'red';
+    }
+  }, []);
+
+  const onChangeNickname = useCallback((e) => {
+    setNickname(e.target.value);
+    if (nickname.length > 0) {
+      document.querySelector('.form-nickname i').style.color = 'green';
+    }
+  }, [nickname]);
+
+  const onChangePassword = useCallback((e) => {
+    setPassword(e.target.value);
+    if(password.length < 3) {
+      document.querySelector('.form-password i').style.color = 'red';
+    } else {
+      document.querySelector('.form-password i').style.color = 'green';
+    }
+  }, [password]);
 
   const onChangePasswordCheck = useCallback(
     (e) => {
       setPasswordCheck(e.target.value);
       setPasswordError(e.target.value !== password);
-    },
-    [password]
-  );
+    }, [password]);
 
   const onSubmit = useCallback(
     (e) => {
@@ -45,18 +83,13 @@ const SignupForm = () => {
     [email, nickname, password, passwordCheck]
   );
 
-  useEffect(() => {
-    if (signupDone) {
-      history.push('/auth/login');
-    }
-  }, [signupDone]);
 
   return (
     <>
-      <Logo />
+      <Logo title={'왓더제주'}/>
       <div className="form-container">
         <form onSubmit={onSubmit}>
-          <div className="form-input">
+          <div className="form-input form-email">
             <input
               type="email"
               placeholder="이메일"
@@ -66,7 +99,7 @@ const SignupForm = () => {
             />
             <i class="fas fa-check"></i>
           </div>
-          <div className="form-input">
+          <div className="form-input form-nickname">
             <input
               type="text"
               placeholder="닉네임"
@@ -76,7 +109,7 @@ const SignupForm = () => {
             />
             <i class="fas fa-check"></i>
           </div>
-          <div className="form-input">
+          <div className="form-input form-password">
             <input
               type="password"
               placeholder="비밀번호"
@@ -86,7 +119,7 @@ const SignupForm = () => {
             />
             <i class="fas fa-check"></i>
           </div>
-          <div className="form-input">
+          <div className="form-input form-password-check">
             <input
               type="password"
               placeholder="비밀번호 확인"

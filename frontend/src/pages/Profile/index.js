@@ -47,15 +47,16 @@ const Profile = () => {
   return (
     <div>
       {me &&
-        me.Wished.map((wishedPlace) => (
-          <div>
-            {wishedPlace.name}
-            <img
-              src={`${API_HOST}/${wishedPlace.Images[0].src}`}
-              alt={wishedPlace.Images[0].src}
-            ></img>
-          </div>
-        ))}
+        <span>프로필화면</span>
+        // me.Wished.map((wishedPlace) => (
+        //   <div>
+        //     {wishedPlace.name}
+        //     <img
+        //       src={`${API_HOST}/${wishedPlace.Images[0].src}`}
+        //       alt={wishedPlace.Images[0].src}
+        //     ></img>
+        //   </div>))
+      }
       <button onClick={getLocation}>도민 인증</button>
     </div>
   );

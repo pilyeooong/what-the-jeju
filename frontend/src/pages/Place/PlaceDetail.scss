@@ -2,6 +2,27 @@
 
 .placeContainer {
   max-width: 1200px;
+
+  .placeAbout {
+    display: flex;
+
+    .placeInfo {
+      display: none;
+    }
+  }
+
+  .placeButtons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 0 .8em;
+
+    i {
+      font-size: 1.8rem;
+      margin-left: .5em;
+    }
+  }
 }
 
 @include tablet{
@@ -9,8 +30,11 @@
     margin: 0 auto;
 
     .placeAbout {
-      display: flex;
-      height: 450px;
+      .placeInfo {
+        display: block;
+        width: 50%;
+        background: chocolate;
+      }
     }
 
     .slider {

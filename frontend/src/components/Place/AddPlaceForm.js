@@ -9,11 +9,16 @@ import {
   UPLOAD_IMAGES_REQUEST,
   UPLOAD_PLACE_REQUEST,
 } from '../../reducers/place';
+
+import './AddPlaceForm.scss';
+
+import Logo from '../Logo/AuthPage';
 import Modal from '../Modal';
 
 const AddPlaceForm = () => {
   const dispatch = useDispatch();
   const { imagePaths, placeAddresses } = useSelector((state) => state.place);
+  const uploadPlaceError = useSelector(state => state.place.uploadPlaceError);
 
   const [click, setClick] = useState(false);
   const [addressesToShow, setAddressesToShow] = useState([]);
@@ -48,6 +53,12 @@ const AddPlaceForm = () => {
     );
   }, [currentAddressesPage, placeAddresses]);
 
+  useEffect(() => {
+    if (uploadPlaceError) {
+      alert(uploadPlaceError);
+    }
+  }, [uploadPlaceError]);
+
   const onChangeSearchType = useCallback(
     (e) => {
       setSearchType(e.target.value);
@@ -58,6 +69,10 @@ const AddPlaceForm = () => {
   const onSubmit = useCallback(
     (e) => {
       e.preventDefault();
+      if (category.length === 0 || category === 'none') {
+        alert('카테고리를 선택해주세요');
+        return;
+      }
       const formData = new FormData();
       imagePaths.forEach((src) => {
         formData.append('image', src);
@@ -73,7 +88,7 @@ const AddPlaceForm = () => {
         data: formData,
       });
     },
-    [name, description, address, imagePaths]
+    [category, name, description, address, imagePaths]
   );
 
   const onClickAddressPageNum = useCallback(
@@ -129,19 +144,23 @@ const AddPlaceForm = () => {
 
   return (
     <>
+    <Logo title={'핫플 추가하기'} />
+    <div className="form-container">
       <form onSubmit={onSubmit}>
         <select
+          className="form-category"
           placeholder="카테고리"
           value={category}
           onChange={onChangeCategory}
         >
-          <option defaultValue>------------</option>
+          <option defaultValue value="none">------------</option>
           <option value="cafe">카페</option>
           <option value="ocean">해변</option>
           <option value="museum">박물관</option>
         </select>
         <input
           type="text"
+          className="form-input"
           placeholder="이름"
           value={name}
           onChange={onChangeName}
@@ -149,33 +168,43 @@ const AddPlaceForm = () => {
         />
         <input
           type="text"
+          className="form-input"
           placeholder="설명"
           value={description}
           onChange={onChangeDescription}
           required
         />
-        <button type="button" onClick={onClickAddressModal}>
+        <button className="form-address-button" type="button" onClick={onClickAddressModal}>
           주소검색
         </button>
         <input
           type="text"
+          className="form-input"
           placeholder="주소"
           value={address}
-          disabled
+          // disabled
           required
         />
         <input
           type="file"
+          className=""
           name="image"
           multiple
           onChange={onChangeImages}
           required
         />
-        {imagePaths.map((v, i) => (
-          <img src={`${API_HOST}/${v}`} />
-        ))}
-        <button type="submit">업로드</button>
+        <div className="form-image">
+          {imagePaths.map((v, i) => (
+            <div className="form-image__thumbnail">
+              <img src={`${API_HOST}/${v}`} />
+            </div>
+          ))}
+        </div>
+        <div className="form-upload">
+          <button className="form-upload__button" type="submit">업로드</button>
+        </div>
       </form>
+      </div>
       <Modal title={'주소검색'} isClicked={click} setClick={setClick}>
         <form>
           <div className="searchTypeButtons">

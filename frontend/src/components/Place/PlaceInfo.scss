@@ -1,4 +1,32 @@
-.info-container {
+.placeDetailInfo {
   width: 100%;
   height: 60vh;
+
+  &__name {
+    text-align: center;
+  }
+
+  &__description {
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #959595;
+  }
+
+  &__basicInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 75px;
+    background: #f4f4f4;
+    padding: 0 1em;
+
+    .title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-right: 1em;
+      margin-bottom: .5em;
+    }
+  }
 }
