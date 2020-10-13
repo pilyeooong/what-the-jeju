@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import { LOG_IN_REQUEST } from '../../reducers/user';
 
-import Logo from '../Logo/AuthPage';
+import Logo from '../Logo';
 
 import './LoginForm.scss';
 

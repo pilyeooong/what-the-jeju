@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import useInput from '../../hooks/useInput';
 
 import { SIGN_UP_REQUEST } from '../../reducers/user';
-import Logo from '../Logo/AuthPage';
+import Logo from '../Logo';
 
 import './SignupForm.scss';
 

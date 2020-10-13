@@ -12,7 +12,7 @@ import {
 
 import './AddPlaceForm.scss';
 
-import Logo from '../Logo/AuthPage';
+import Logo from '../Logo';
 import Modal from '../Modal';
 
 const AddPlaceForm = () => {
