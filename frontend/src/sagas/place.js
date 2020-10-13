@@ -26,11 +26,17 @@ import {
   UNWISH_PLACE_REQUEST,
   UNWISH_PLACE_SUCCESS,
   UNWISH_PLACE_FAILURE,
+  LIKE_PLACE_REQUEST,
+  LIKE_PLACE_SUCCESS,
+  LIKE_PLACE_FAILURE,
+  UNLIKE_PLACE_REQUEST,
+  UNLIKE_PLACE_SUCCESS,
+  UNLIKE_PLACE_FAILURE,
   SEARCH_DIRECTION_REQUEST,
   SEARCH_DIRECTION_SUCCESS,
   SEARCH_DIRECTION_FAILURE,
 } from '../reducers/place';
-import { ADD_WISH_PLACE_TO_ME, REMOVE_WISH_PLACE_TO_ME } from '../reducers/user';
+import { ADD_WISH_PLACE_TO_ME, REMOVE_WISH_PLACE_TO_ME, ADD_LIKE_PLACE_TO_ME ,REMOVE_LIKE_PLACE_TO_ME } from '../reducers/user';
 
 function loadPlacesAPI() {
   return axios.get('/places');
@@ -218,20 +224,19 @@ function* watchSearchAddress() {
 }
 
 function wishPlaceAPI(data) {
-  return axios.patch(`/place/wish/${data}`);
+  return axios.patch(`/place/${data}/wish`);
 }
 
 function* wishPlace(action) {
   try {
     const result = yield call(wishPlaceAPI, action.data);
-    console.log(result);
     yield put({
       type: WISH_PLACE_SUCCESS,
-      data: result.data
+      data: result.data.userId
     });
     yield put({
       type: ADD_WISH_PLACE_TO_ME,
-      data: result.data.placeId
+      data: result.data.place
     })
   } catch (err) {
     console.error(err);
@@ -247,7 +252,7 @@ function* watchWishPlace() {
 }
 
 function unWishPlaceAPI(data) {
-  return axios.patch(`/place/unwish/${data}`);
+  return axios.patch(`/place/${data}/unwish`);
 }
 
 function* unWishPlace(action) {
@@ -256,7 +261,7 @@ function* unWishPlace(action) {
     console.log(result);
     yield put({
       type: UNWISH_PLACE_SUCCESS,
-      data: result.data
+      data: result.data.userId
     });
     yield put({
       type: REMOVE_WISH_PLACE_TO_ME,
@@ -275,6 +280,62 @@ function* watchUnWishPlace() {
   yield takeLatest(UNWISH_PLACE_REQUEST, unWishPlace);
 }
 
+function unLikePlaceAPI(data) {
+  return axios.patch(`/place/${data}/unlike`);
+}
+
+function* unLikePlace(action) {
+  try {
+    const result = yield call(unLikePlaceAPI, action.data);
+    yield put({
+      type: UNLIKE_PLACE_SUCCESS,
+      data: result.data.userId
+    });
+    yield put({
+      type: REMOVE_LIKE_PLACE_TO_ME,
+      data: result.data.placeId
+    })
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: UNLIKE_PLACE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchUnLikePlace() {
+  yield takeLatest(UNLIKE_PLACE_REQUEST, unLikePlace);
+}
+
+function likePlaceAPI(data) {
+  return axios.patch(`/place/${data}/like`);
+}
+
+function* likePlace(action) {
+  try {
+    const result = yield call(likePlaceAPI, action.data);
+    yield put({
+      type: LIKE_PLACE_SUCCESS,
+      data: result.data.userId
+    });
+    yield put({
+      type: ADD_LIKE_PLACE_TO_ME,
+      data: result.data.placeId
+    })
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: UNLIKE_PLACE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchLikePlace() {
+  yield takeLatest(LIKE_PLACE_REQUEST, likePlace);
+}
+
 export default function* placeSaga() {
   yield all([
     fork(watchGeocode),
@@ -286,5 +347,7 @@ export default function* placeSaga() {
     fork(watchSearchAddress),
     fork(watchWishPlace),
     fork(watchUnWishPlace),
+    fork(watchLikePlace),
+    fork(watchUnLikePlace),
   ]);
 }

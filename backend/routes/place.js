@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const axios = require('axios');
-const { Place, Image, User, Category } = require('../models');
+const { Place, Image, User, Category, Hashtag } = require('../models');
 const { upload } = require('./middlewares');
 const { naverConfig, kakaoConfig } = require('./apiHeaders');
 
@@ -72,17 +72,36 @@ router.get('/search/keyword/:placeName', async (req, res, next) => {
 
 router.post('/', upload.none(), async (req, res, next) => {
   try {
-    const category = await Category.findOne({ where: { name: req.body.category }});
+    if (!req.user) {
+      return res.status(401).send('로그인이 필요합니다.');
+    }
+    const category = await Category.findOne({
+      where: { name: req.body.category },
+    });
+    const exPlace = await Place.findOne({ where: { name: req.body.name } });
+    if (exPlace) {
+      return res.status(409).send('같은 이름의 장소가 존재합니다.');
+    }
+    const hashtags = req.body.description.match(/#[^\s]+/g);
+    const description = req.body.description.replace(/#[^\s]+/g, '').trim();
     const place = await Place.create({
       CategoryId: category.id,
       name: req.body.name,
-      description: req.body.description,
+      description,
       address: req.body.address,
       UserId: req.user.id,
       lat: req.body.lat,
       lng: req.body.lng,
       fee: 0,
     });
+    if (hashtags) {
+      const result = await Promise.all(
+        hashtags.map((v) =>
+          Hashtag.findOrCreate({ where: { name: v.slice(1).toLowerCase() } })
+        )
+      );
+      await place.addHashtags(result.map((v) => v[0])); // result = [[Hashtag, true], [Hashtag, true]] 형태의 반환 값
+    }
     if (req.body.image) {
       if (Array.isArray(req.body.image)) {
         const images = await Promise.all(
@@ -114,6 +133,15 @@ router.get('/:id', async (req, res, next) => {
           as: 'Wishers',
           attributes: ['id'],
         },
+        {
+          model: User,
+          as: 'Likers',
+          attributes: ['id'],
+        },
+        {
+          model: Hashtag,
+          attributes: ['name'],
+        },
       ],
     });
     return res.status(200).send(place);
@@ -123,15 +151,49 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-router.patch('/wish/:placeId', async (req, res, next) => {
+router.patch('/:placeId/like', async (req, res, next) => {
   try {
     const place = await Place.findOne({
       where: { id: parseInt(req.params.placeId, 10) },
-      include: [{
-        model: User,
-        as: 'Wishers',
-        attributes: ['id']
-      }]
+    });
+    if (!place) {
+      return res.status(404).send('존재하지 않는 장소입니다.');
+    }
+    if (!req.user) {
+      return res.status(401).send('로그인이 필요합니다.');
+    }
+    await place.addLikers(req.user.id);
+    return res.status(200).json({ placeId: place.id, userId: req.user.id });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+router.patch('/:placeId/unlike', async (req, res, next) => {
+  try {
+    const place = await Place.findOne({
+      where: { id: parseInt(req.params.placeId, 10) },
+    });
+    if (!place) {
+      return res.status(404).send('존재하지 않는 장소입니다.');
+    }
+    if (!req.user) {
+      return res.status(401).send('로그인이 필요합니다.');
+    }
+    await place.removeLikers(req.user.id);
+    return res.status(200).json({ placeId: place.id, userId: req.user.id });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+router.patch('/:placeId/wish', async (req, res, next) => {
+  try {
+    const place = await Place.findOne({
+      where: { id: parseInt(req.params.placeId, 10) },
+      include: [{ model: Image }],
     });
     if (!place) {
       return res.status(404).send('존재하지 않는 장소입니다.');
@@ -140,22 +202,17 @@ router.patch('/wish/:placeId', async (req, res, next) => {
       return res.status(401).send('로그인이 필요합니다.');
     }
     await place.addWishers(req.user.id);
-    return res.status(200).json({ placeId: place.id, userId: req.user.id });
+    return res.status(200).json({ place, userId: req.user.id });
   } catch (err) {
     console.error(err);
     next(err);
   }
 });
 
-router.patch('/unwish/:placeId', async (req, res, next) => {
+router.patch('/:placeId/unwish', async (req, res, next) => {
   try {
     const place = await Place.findOne({
       where: { id: parseInt(req.params.placeId, 10) },
-      include: [{
-        model: User,
-        as: 'Wishers',
-        attributes: ['id']
-      }]
     });
     if (!place) {
       return res.status(404).send('존재하지 않는 장소입니다.');
@@ -163,16 +220,16 @@ router.patch('/unwish/:placeId', async (req, res, next) => {
     if (!req.user) {
       return res.status(401).send('로그인이 필요합니다.');
     }
-    const isWished = place.Wishers.find(v => v.id === req.user.id);
-    if (isWished) {
-      await place.removeWishers(req.user.id);
-      return res.status(200).json({ placeId: place.id, userId: req.user.id });
-    }
+    // const isWished = place.Wishers.find((v) => v.id === req.user.id);
+    // if (isWished) {
+    await place.removeWishers(req.user.id);
+    return res.status(200).json({ placeId: place.id, userId: req.user.id });
+    // }
   } catch (err) {
     console.error(err);
     next(err);
   }
-})
+});
 
 router.post('/directions', async (req, res, next) => {
   // const wayPoints = [
@@ -184,20 +241,23 @@ router.post('/directions', async (req, res, next) => {
   // ];
   const { origin, destination, wayPoints } = req.body;
   let wayPointsParams = '';
-  for (let i = 0; i < wayPoints.length; i++){
-      if (i === wayPoints.length - 1) {
-          wayPointsParams += `${wayPoints[i].lng},${wayPoints[i].lat}`;
-      } else {
-          wayPointsParams += `${wayPoints[i].lng},${wayPoints[i].lat}|`;
-      }
+  for (let i = 0; i < wayPoints.length; i++) {
+    if (i === wayPoints.length - 1) {
+      wayPointsParams += `${wayPoints[i].lng},${wayPoints[i].lat}`;
+    } else {
+      wayPointsParams += `${wayPoints[i].lng},${wayPoints[i].lat}|`;
+    }
   }
   console.log(wayPointsParams);
   const startPoint = `${origin.lng},${origin.lat}`;
   const endPoint = `${destination.lng},${destination.lat}`;
   try {
-    const result = await axios.get(`https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${startPoint}&goal=${endPoint}&waypoints=${wayPointsParams}&option=traoptimal`, naverConfig);
+    const result = await axios.get(
+      `https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${startPoint}&goal=${endPoint}&waypoints=${wayPointsParams}&option=traoptimal`,
+      naverConfig
+    );
     return res.status(200).send(result.data.route.traoptimal[0]);
-  } catch(err) {
+  } catch (err) {
     console.error(err);
     next(err);
   }

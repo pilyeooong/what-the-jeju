@@ -52,6 +52,9 @@ export const CHECK_JEJU_NATIVE_FAILURE = 'CHECK_JEJU_NATIVE_FAILURE';
 export const ADD_WISH_PLACE_TO_ME = 'ADD_WISH_PLACE_TO_ME';
 export const REMOVE_WISH_PLACE_TO_ME = 'REMOVE_WISH_PLACE_TO_ME';
 
+export const ADD_LIKE_PLACE_TO_ME = 'ADD_LIKE_PLACE_TO_ME';
+export const REMOVE_LIKE_PLACE_TO_ME = 'REMOVE_LIKE_PLACE_TO_ME';
+
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
@@ -130,10 +133,16 @@ const reducer = (state = initialState, action) => {
         draft.logOutError = action.error;
         break;
       case ADD_WISH_PLACE_TO_ME:
-        draft.me.Wished.push({ id: action.data });
+        draft.me.Wished.push(action.data);
         break;
       case REMOVE_WISH_PLACE_TO_ME:
         draft.me.Wished = draft.me.Wished.filter(v => v.id !== action.data);
+        break;
+      case ADD_LIKE_PLACE_TO_ME:
+        draft.me.Liked.push({ id: action.data });
+        break;
+      case REMOVE_LIKE_PLACE_TO_ME:
+        draft.me.Liked = draft.me.Liked.filter(v => v.id !== action.data);
         break;
       default:
         break;

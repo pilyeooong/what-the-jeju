@@ -30,6 +30,11 @@ const initialState = {
   wishPlaceLoading: false,
   wishPlaceDone: false,
   wishPlaceError: null,
+
+  // like Place
+  likePlaceLoading: false,
+  likePlaceDone: false,
+  likePlaceError: null,
   
   // direction API
   searchDirectionLoading: false,
@@ -84,6 +89,17 @@ export const WISH_PLACE_FAILURE = 'WISH_PLACE_FAILURE';
 export const UNWISH_PLACE_REQUEST = 'UNWISH_PLACE_REQUEST';
 export const UNWISH_PLACE_SUCCESS = 'UNWISH_PLACE_SUCCESS';
 export const UNWISH_PLACE_FAILURE = 'UNWISH_PLACE_FAILURE';
+
+export const LIKE_PLACE_REQUEST = 'LIKE_PLACE_REQUEST';
+export const LIKE_PLACE_SUCCESS = 'LIKE_PLACE_SUCCESS';
+export const LIKE_PLACE_FAILURE = 'LIKE_PLACE_FAILURE';
+
+export const UNLIKE_PLACE_REQUEST = 'UNLIKE_PLACE_REQUEST';
+export const UNLIKE_PLACE_SUCCESS = 'UNLIKE_PLACE_SUCCESS';
+export const UNLIKE_PLACE_FAILURE = 'UNLIKE_PLACE_FAILURE';
+
+export const SET_LIKE_ERROR_NULL = 'SET_LIKE_ERROR_NULL';
+export const SET_WISH_ERROR_NULL = 'SET_WISH_ERROR_NULL';
 
 
 const reducer = (state = initialState, action) => {
@@ -232,6 +248,7 @@ const reducer = (state = initialState, action) => {
       case WISH_PLACE_SUCCESS: {
         draft.wishPlaceLoading = false;
         draft.wishPlaceDone = true;
+        draft.placeDetail.Wishers.push({ id: action.data });
         break;
       }
       case WISH_PLACE_FAILURE: {
@@ -248,12 +265,53 @@ const reducer = (state = initialState, action) => {
       case UNWISH_PLACE_SUCCESS: {
         draft.wishPlaceLoading = false;
         draft.wishPlaceDone = true;
+        draft.placeDetail.Wishers = draft.placeDetail.Wishers.filter(v => v.id !== action.data);
         break;
       }
       case UNWISH_PLACE_FAILURE: {
         draft.wishPlaceLoading = false;
         draft.wishPlaceError = action.error;
         break;
+      }
+      case LIKE_PLACE_REQUEST: {
+        draft.likePlaceLoading = true;
+        draft.likePlaceDone = false;
+        draft.likePlaceError = null;
+        break;
+      }
+      case LIKE_PLACE_SUCCESS: {
+        draft.likePlaceLoading = false;
+        draft.likePlaceDone = true;
+        draft.placeDetail.Likers.push({ id: action.data });
+        break;
+      }
+      case LIKE_PLACE_FAILURE: {
+        draft.likePlaceLoading = false;
+        draft.likePlaceError = action.error;
+        break;
+      }
+      case UNLIKE_PLACE_REQUEST: {
+        draft.likePlaceLoading = true;
+        draft.likePlaceDone = false;
+        draft.likePlaceError = null;
+        break;
+      }
+      case UNLIKE_PLACE_SUCCESS: {
+        draft.likePlaceLoading = false;
+        draft.likePlaceDone = true;
+        draft.placeDetail.Likers = draft.placeDetail.Likers.filter(v => v.id !== action.data);
+        break;
+      }
+      case UNLIKE_PLACE_FAILURE: {
+        draft.likePlaceLoading = false;
+        draft.likePlaceError = action.error;
+        break;
+      }
+      case SET_LIKE_ERROR_NULL: {
+        draft.likePlaceError = null;
+      }
+      case SET_WISH_ERROR_NULL: {
+        draft.wishPlaceError = null;
       }
       default:
         break;

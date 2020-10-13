@@ -31,6 +31,11 @@ router.get('/', async (req, res, next) => {
               },
             ],
           },
+          {
+            model: Place,
+            as: 'Liked',
+            attributes: ['id']
+          }
         ],
       });
       return res.status(200).send(user);

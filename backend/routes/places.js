@@ -1,5 +1,5 @@
 const express = require('express');
-const { Place, Image } = require('../models');
+const { Place, Image, Hashtag } = require('../models');
 
 const router = express.Router();
 
@@ -10,6 +10,10 @@ router.get('/', async (req, res, next) => {
         {
           model: Image,
           attributes: ['src']
+        },
+        {
+          model: Hashtag,
+          attributes: ['name']
         }
       ]
     });
