@@ -19,7 +19,7 @@ function App() {
           <Route path="/place" component={Place} />
           <Route path="/profile" component={Profile} />
           <Route path="/auth" component={Auth} />
-          <footer>&copy;.2020 reactstagram.pilyeooong</footer>
+          <footer className="container">&copy;.2020 reactstagram.pilyeooong</footer>
         </>
       </Switch>
     </Router>

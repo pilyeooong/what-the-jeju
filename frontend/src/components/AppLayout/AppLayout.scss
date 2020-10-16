@@ -2,11 +2,13 @@
 
 @keyframes modal-ani {
   0% {
-      opacity: 0;
+    opacity: 0;
   }
+
   50% {
     opacity: 5;
   }
+
   100% {
     opacity: 10;
   }
@@ -18,6 +20,7 @@
   .loginModal {
     display: none;
     animation: modal-ani 2s alternate;
+
     .loginModal__background {
       position: fixed;
       top: 0;
@@ -53,7 +56,7 @@
           font-weight: bold;
           margin-right: auto;
         }
-        
+
         button {
           padding-top: 2px;
           border: none;
@@ -108,16 +111,38 @@
       align-items: center;
       margin: 0 auto;
 
+      .navbar__menu {
+        font-size: 1.6rem;
+      }
+
       .logo {
         font-size: 1.4rem;
         font-weight: bold;
         margin-right: auto;
       }
+    }
+  }
 
+  .menus {
+    height: 0px;
+    opacity: 0;
+    transition: all ease 1s 0s;
+
+    .menu__list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-right: 1.5em;
+      font-size: 1.3rem;
+
+      a {
+        margin-bottom: 1.3em;
+        color: #616161;
+      }
       .authenticate {
-        border: 1px solid rgb(17, 199, 143);
-        padding: 0.5em 1.2em;
-        border-radius: 12px;
+        // padding: 0.5em 1.2em;
+        // border: 1px solid rgb(17, 199, 143);
+        // border-radius: 12px;
         color: #11C78F;
       }
 
@@ -125,6 +150,13 @@
         margin-left: 1.5em;
       }
     }
+
+  }
+
+  .menuClicked {
+    display: block;
+    opacity: 1;
+    height: 120px;
   }
 
   .categories {
@@ -141,6 +173,8 @@
       align-items: center;
       margin: 0 auto;
       font-size: 1.2rem;
+      opacity: 1;
+      transition: all ease 1s 0s;
 
       a {
         color: rgb(97, 97, 97);
@@ -180,9 +214,16 @@
         color: blue;
       }
 
-      .authenticate {
-        font-size: 1.2rem;
+
+    }
+
+    .menus {
+      .menu__list {
+        .authenticate {
+          font-size: 1.2rem;
+        }
       }
+
     }
 
     .loginModal {

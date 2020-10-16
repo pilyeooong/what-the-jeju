@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 
+import AppLayout from '../../components/AppLayout';
 import DirectionForm from '../../components/Directions/DirectionForm';
-import Map from '../../components/Map';
 
 const Direction = () => {
   const dispatch = useDispatch();
@@ -15,9 +15,9 @@ const Direction = () => {
     })
   }, []);
   return (
-    <>
+    <AppLayout>
       {me && <DirectionForm me={me} />}
-    </>
+    </AppLayout>
   );
 };
 

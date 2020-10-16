@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { GEOCODE_PLACE_REQUEST, SEARCH_DIRECTION_REQUEST } from '../../reducers/place';
+import {
+  GEOCODE_PLACE_REQUEST,
+  SEARCH_DIRECTION_REQUEST,
+} from '../../reducers/place';
 
 const Style = {
   width: '100%',
@@ -12,10 +15,11 @@ const Map = ({ wayPoints }) => {
   const [searchedDestination, setSearchedDestination] = useState('');
 
   const [currentMap, setCurrentMap] = useState(null);
+  const [infoMessage, setInfoMessage] = useState(null);
 
-  const destination = useSelector(state => state.place.destination);
-  const origin = useSelector(state => state.place.origin);
-  const directionPaths = useSelector(state => state.place.directionPaths);
+  const destination = useSelector((state) => state.place.destination);
+  const origin = useSelector((state) => state.place.origin);
+  const directionPaths = useSelector((state) => state.place.directionPaths);
 
   const dispatch = useDispatch();
 
@@ -40,17 +44,29 @@ const Map = ({ wayPoints }) => {
 
   useEffect(() => {
     if (origin.lat && origin.lng) {
-      const findPlace = new window.naver.maps.LatLng(
-        origin.lat,
-        origin.lng
-      );
+      const findPlace = new window.naver.maps.LatLng(origin.lat, origin.lng);
       currentMap.panTo(findPlace);
-      new window.naver.maps.Marker({
+      const marker = new window.naver.maps.Marker({
         position: new window.naver.maps.LatLng(origin.lat, origin.lng),
-        map: currentMap
+        map: currentMap,
+      });
+      const infoWindow = new window.naver.maps.InfoWindow({
+        anchorSkew: true,
+        maxWidth: 140,
+        backgroundColor: '#eee',
+      });
+      const infoMessage = [`<div>${origin.name}</div>`].join('');
+
+      infoWindow.setContent(infoMessage);
+      window.naver.maps.Event.addListener(marker, 'click', () => {
+        if (infoWindow.getMap()) {
+          infoWindow.close();
+        } else {
+          infoWindow.open(currentMap, marker);
+        }
       });
     }
-  }, [origin.lat, origin.lng, currentMap]);
+  }, [origin.name, origin.lat, origin.lng, currentMap]);
 
   useEffect(() => {
     if (destination.lat && destination.lng) {
@@ -59,12 +75,30 @@ const Map = ({ wayPoints }) => {
         destination.lng
       );
       currentMap.panTo(findPlace);
-      new window.naver.maps.Marker({
-        position: new window.naver.maps.LatLng(destination.lat, destination.lng),
-        map: currentMap
+      const marker = new window.naver.maps.Marker({
+        position: new window.naver.maps.LatLng(
+          destination.lat,
+          destination.lng
+        ),
+        map: currentMap,
+      });
+      const infoWindow = new window.naver.maps.InfoWindow({
+        anchorSkew: true,
+        maxWidth: 140,
+        backgroundColor: '#eee',
+      });
+      const infoMessage = [`<div>${destination.name}</div>`].join('');
+
+      infoWindow.setContent(infoMessage);
+      window.naver.maps.Event.addListener(marker, 'click', () => {
+        if (infoWindow.getMap()) {
+          infoWindow.close();
+        } else {
+          infoWindow.open(currentMap, marker);
+        }
       });
     }
-  }, [destination.lat, destination.lng]);
+  }, [destination.name, destination.lat, destination.lng, currentMap]);
 
   useEffect(() => {
     if (directionPaths.length !== 0) {
@@ -72,32 +106,41 @@ const Map = ({ wayPoints }) => {
         map: currentMap,
         path: directionPaths,
         strokeColor: 'red',
-        strokeWeight: 3
+        strokeWeight: 3,
       });
-      wayPoints.forEach(wayPoint => new window.naver.maps.Marker({ position: new window.naver.maps.LatLng(wayPoint.lat, wayPoint.lng), map: currentMap }))
+      wayPoints.forEach(
+        (wayPoint) =>
+          new window.naver.maps.Marker({
+            position: new window.naver.maps.LatLng(wayPoint.lat, wayPoint.lng),
+            map: currentMap,
+          })
+      );
     }
   }, [wayPoints, currentMap, directionPaths]);
 
-  const onSubmitPlace = useCallback((type) => (e) => {
-    e.preventDefault();
-    if(type === 'origin') {
-      dispatch({
-        type: GEOCODE_PLACE_REQUEST,
-        data: {
-          type: 'origin',
-          place: searchedOrigin
-        },
-      });
-    } else {
-      dispatch({
-        type: GEOCODE_PLACE_REQUEST,
-        data: {
-          type: 'destination',
-          place: searchedDestination
-        }
-      })
-    }
-  }, [searchedOrigin, searchedDestination]);
+  const onSubmitPlace = useCallback(
+    (type) => (e) => {
+      e.preventDefault();
+      if (type === 'origin') {
+        dispatch({
+          type: GEOCODE_PLACE_REQUEST,
+          data: {
+            type: 'origin',
+            place: searchedOrigin,
+          },
+        });
+      } else {
+        dispatch({
+          type: GEOCODE_PLACE_REQUEST,
+          data: {
+            type: 'destination',
+            place: searchedDestination,
+          },
+        });
+      }
+    },
+    [searchedOrigin, searchedDestination]
+  );
 
   const onChangeOrigin = useCallback((e) => {
     setSearchedOrigin(e.target.value);
@@ -119,24 +162,32 @@ const Map = ({ wayPoints }) => {
         origin,
         destination,
         wayPoints,
-      }
-    })
+      },
+    });
   }, [origin, destination, wayPoints]);
 
   return (
     <>
-      <div>
-        <label htmlFor="">출발지</label>
-        <input type="text" value={searchedOrigin} onChange={onChangeOrigin} />
-        <button onClick={onSubmitPlace('origin')}>찾기</button>
-      </div>
-      <div>
-        <label htmlFor="">목적지</label>
-        <input type="text" value={searchedDestination} onChange={onChangeDestination} />
-        <button onClick={onSubmitPlace('destination')}>찾기</button>
+      <div className="searchDirection__form">
+        <div className="searchDirection__input">
+          <label htmlFor="">출발지</label>
+          <input type="text" value={searchedOrigin} onChange={onChangeOrigin} />
+          <button onClick={onSubmitPlace('origin')}>찾기</button>
+        </div>
+        <div className="searchDirection__input">
+          <label htmlFor="">목적지</label>
+          <input
+            type="text"
+            value={searchedDestination}
+            onChange={onChangeDestination}
+          />
+          <button onClick={onSubmitPlace('destination')}>찾기</button>
+        </div>
       </div>
       <div id="map" style={Style}></div>
-      <button onClick={onSearchDirection}>동선 검색</button>
+      <div className="searchDirection__button">
+        <button onClick={onSearchDirection}>동선 검색</button>
+      </div>
     </>
   );
 };
