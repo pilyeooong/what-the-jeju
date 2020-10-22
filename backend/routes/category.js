@@ -1,5 +1,5 @@
 const express = require('express');
-const { Category, Place, Image } = require('../models');
+const { Category, Place, Image, Hashtag } = require('../models');
 
 const router = express.Router();
 
@@ -23,6 +23,12 @@ router.get('/:id', async (req, res, next) => {
         model: Place,
         include: [{
           model: Image
+        }, {
+          model: Hashtag,
+          attributes: ['name']
+        }, {
+          model: Category,
+          attributes: ['name']
         }]
       }
     ]
