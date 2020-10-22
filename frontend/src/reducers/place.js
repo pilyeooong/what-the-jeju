@@ -10,6 +10,11 @@ const initialState = {
   loadPlaceDone: false,
   loadPlaceError: null,
 
+  // categorized Place
+  categorizedPlaceLoading: false,
+  categorizedPlaceDone: false,
+  categorizedPlaceError: null,
+
   // upload Place
   uploadPlaceLoading: false,
   uploadPlaceDone: false,
@@ -56,6 +61,10 @@ const initialState = {
 export const LOAD_PLACES_REQUEST = 'LOAD_PLACES_REQUEST';
 export const LOAD_PLACES_SUCCESS = 'LOAD_PLACES_SUCCESS';
 export const LOAD_PLACES_FAILURE = 'LOAD_PLACES_FAILURE';
+
+export const LOAD_CATEGORIZED_PLACES_REQUEST = 'LOAD_CATEGORIZED_PLACES_REQUEST';
+export const LOAD_CATEGORIZED_PLACES_SUCCESS = 'LOAD_CATEGORIZED_PLACES_SUCCESS';
+export const LOAD_CATEGORIZED_PLACES_FAILURE = 'LOAD_CATEGORIZED_PLACES_FAILURE';
 
 export const LOAD_PLACE_REQUEST = 'LOAD_PLACE_REQUEST';
 export const LOAD_PLACE_SUCCESS = 'LOAD_PLACE_SUCCESS';
@@ -123,6 +132,26 @@ const reducer = (state = initialState, action) => {
         draft.loadPlaceLoading = false;
         draft.loadPlaceDone = false;
         draft.loadPlaceError = action.error;
+        break;
+      }
+      case LOAD_CATEGORIZED_PLACES_REQUEST: {
+        draft.categorizedPlaceLoading = true;
+        draft.categorizedPlaceDone = false;
+        draft.places = [];
+        draft.placeAddresses = [];
+        draft.imagePaths = [];
+        break;
+      }
+      case LOAD_CATEGORIZED_PLACES_SUCCESS: {
+        draft.categorizedPlaceLoading = false;
+        draft.categorizedPlaceDone = true;
+        draft.places = action.data;
+        break;
+      }
+      case LOAD_CATEGORIZED_PLACES_FAILURE: {
+        draft.categorizedPlaceLoading = false;
+        draft.categorizedPlaceDone = false;
+        draft.categorizedPlaceError = action.error;
         break;
       }
       case LOAD_PLACE_REQUEST: {

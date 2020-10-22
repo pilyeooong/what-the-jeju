@@ -35,6 +35,9 @@ import {
   SEARCH_DIRECTION_REQUEST,
   SEARCH_DIRECTION_SUCCESS,
   SEARCH_DIRECTION_FAILURE,
+  LOAD_CATEGORIZED_PLACES_REQUEST,
+  LOAD_CATEGORIZED_PLACES_SUCCESS,
+  LOAD_CATEGORIZED_PLACES_FAILURE
 } from '../reducers/place';
 import { ADD_WISH_PLACE_TO_ME, REMOVE_WISH_PLACE_TO_ME, ADD_LIKE_PLACE_TO_ME ,REMOVE_LIKE_PLACE_TO_ME } from '../reducers/user';
 
@@ -60,6 +63,30 @@ function* loadPlaces(action) {
 
 function* watchLoadPlaces() {
   yield takeLatest(LOAD_PLACES_REQUEST, loadPlaces);
+}
+
+function categorizePlacesAPI(data) {
+  return axios.get(`/category/${data}`);
+}
+
+function* categorizePlaces(action) {
+  try {
+    const result = yield call(categorizePlacesAPI, action.data);
+    yield put({
+      type: LOAD_CATEGORIZED_PLACES_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_CATEGORIZED_PLACES_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchCategorizePlaces() {
+  yield takeLatest(LOAD_CATEGORIZED_PLACES_REQUEST, categorizePlaces);
 }
 
 // 단일 Place Detail
@@ -326,7 +353,7 @@ function* likePlace(action) {
   } catch (err) {
     console.error(err);
     yield put({
-      type: UNLIKE_PLACE_FAILURE,
+      type:LIKE_PLACE_FAILURE,
       error: err.response.data,
     });
   }
@@ -349,5 +376,6 @@ export default function* placeSaga() {
     fork(watchUnWishPlace),
     fork(watchLikePlace),
     fork(watchUnLikePlace),
+    fork(watchCategorizePlaces)
   ]);
 }

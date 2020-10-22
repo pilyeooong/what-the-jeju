@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import './AppLayout.scss';
+import { LOAD_CATEGORIZED_PLACES_REQUEST, LOAD_PLACES_REQUEST } from '../../reducers/place';
 import { LOG_OUT_REQUEST, LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 
 const AppLayout = ({ children }) => {
@@ -42,21 +43,43 @@ const AppLayout = ({ children }) => {
 
   const onClickMenu = useCallback(() => {
     if (menuClicked) {
-      menuBtn.current.classList.remove('menuClicked');
+      if(!me) {
+        menuBtn.current.classList.remove('menuClicked__short');
+      } else {
+        menuBtn.current.classList.remove('menuClicked');
+      }
     } else {
-      menuBtn.current.classList.add('menuClicked');
+      if (!me) {
+        menuBtn.current.classList.add('menuClicked__short');
+      } else {
+        menuBtn.current.classList.add('menuClicked');
+      }
     }
     setMenuClicked(!menuClicked);
-  }, [menuClicked]);
+  }, [me, menuClicked]);
 
   const onClickLogOut = useCallback(() => {
+    menuBtn.current.classList.remove('menuClicked');
+    setMenuClicked(!menuClicked);
     dispatch({
       type: LOG_OUT_REQUEST,
     });
-  }, []);
+  }, [menuClicked]);
 
   const onClickKakaoLogin = useCallback(() => {
     document.location.href = '/api/auth/kakao';
+  }, []);
+
+  const onClickCategory = useCallback((num) => (e) => {
+    if (num === 0) {
+      return dispatch({
+        type: LOAD_PLACES_REQUEST
+      });
+    } 
+    dispatch({
+      type: LOAD_CATEGORIZED_PLACES_REQUEST,
+      data: num
+    })
   }, []);
 
   return (
@@ -85,11 +108,12 @@ const AppLayout = ({ children }) => {
               ) : (
                 <div className="menu__list">
                   <a
-                    className="authenticate login"
+                    className="authenticate"
                     onClick={onToggleLoginModal}
                   >
                     로그인
                   </a>
+                  <Link to="/auth/signup">회원가입</Link>
                 </div>
               )}
             </>
@@ -98,10 +122,10 @@ const AppLayout = ({ children }) => {
         <nav className="categories">
           {!menuClicked && (
             <div className="category__links">
-              <a href="">전체</a>
-              <a href="">바다</a>
-              <a href="">박물관</a>
-              <a href="">카페</a>
+              <a onClick={onClickCategory(0)}>전체</a>
+              <a onClick={onClickCategory(1)}>카페</a>
+              <a onClick={onClickCategory(2)}>바다</a>
+              <a onClick={onClickCategory(3)}>박물관</a>
             </div>
           )}
         </nav>
