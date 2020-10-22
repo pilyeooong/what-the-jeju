@@ -1,9 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import {
-  GEOCODE_PLACE_REQUEST,
   SEARCH_DIRECTION_REQUEST,
+  SEARCH_ADDRESS_REQUEST,
+  SET_ADDRESS_FOR_DIRECTION
 } from '../../reducers/place';
+
+import useInput from '../../hooks/useInput';
+
+import Modal from '../Modal';
 
 const Style = {
   width: '100%',
@@ -11,17 +18,28 @@ const Style = {
 };
 
 const Map = ({ wayPoints }) => {
+  const dispatch = useDispatch();
+
+  const placeAddresses = useSelector((state) => state.place.placeAddresses);
+  const destination = useSelector((state) => state.place.destination);
+  const origin = useSelector((state) => state.place.origin);
+  const directionPaths = useSelector((state) => state.place.directionPaths);
+
+  const [isOrigin, setIsOrigin] = useState(false);
+  const [searchType, setSearchType] = useState('address');
+  const [searchValue, setSearchValue] = useState('');
   const [searchedOrigin, setSearchedOrigin] = useState('');
   const [searchedDestination, setSearchedDestination] = useState('');
 
   const [currentMap, setCurrentMap] = useState(null);
   const [infoMessage, setInfoMessage] = useState(null);
 
-  const destination = useSelector((state) => state.place.destination);
-  const origin = useSelector((state) => state.place.origin);
-  const directionPaths = useSelector((state) => state.place.directionPaths);
+  const [click, setClick] = useState(false);
+  const [addressesToShow, setAddressesToShow] = useState([]);
+  const [totalAddressesPageNum, setTotalAddressesPageNum] = useState([]);
+  const [currentAddressesPage, setCurrentAddressesPage] = useState(1);
 
-  const dispatch = useDispatch();
+  
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -118,44 +136,74 @@ const Map = ({ wayPoints }) => {
     }
   }, [wayPoints, currentMap, directionPaths]);
 
-  const onSubmitPlace = useCallback(
-    (type) => (e) => {
-      e.preventDefault();
-      if (type === 'origin') {
-        dispatch({
-          type: GEOCODE_PLACE_REQUEST,
-          data: {
-            type: 'origin',
-            place: searchedOrigin,
-          },
-        });
-      } else {
-        dispatch({
-          type: GEOCODE_PLACE_REQUEST,
-          data: {
-            type: 'destination',
-            place: searchedDestination,
-          },
-        });
-      }
+  useEffect(() => {
+    setTotalAddressesPageNum([]);
+    setCurrentAddressesPage(1);
+    let totalPageNum = Math.ceil(placeAddresses.length / 5);
+    for (let i = 1; i <= totalPageNum; i++) {
+      setTotalAddressesPageNum((prev) => [...prev, i]);
+    }
+  }, [placeAddresses]);
+
+  useEffect(() => {
+    setAddressesToShow(
+      placeAddresses.slice(
+        (currentAddressesPage - 1) * 5,
+        currentAddressesPage * 5
+      )
+    );
+  }, [currentAddressesPage, placeAddresses]);
+
+  const onChangeSearchValue = useCallback((e) => {
+    setSearchValue(e.target.value);
+  }, []);
+
+  const onClickAddressModal = useCallback((type) =>() => {
+    if (type === 'origin') {
+      setIsOrigin(true);
+    } else {
+      setIsOrigin(false);
+    }
+    if (!click) {
+      setClick(true);
+    } else {
+      setClick(false);
+    }
+  }, [click]);
+
+  const onClickAddressPageNum = useCallback(
+    (number) => () => {
+      setCurrentAddressesPage(number);
     },
-    [searchedOrigin, searchedDestination]
+    []
   );
 
-  const onChangeOrigin = useCallback((e) => {
-    setSearchedOrigin(e.target.value);
-  }, []);
+  const onClickAddressSearch = useCallback(
+    (e) => {
+      e.preventDefault();
+      dispatch({
+        type: SEARCH_ADDRESS_REQUEST,
+        data: {
+          searchType,
+          searchValue,
+        },
+      });
+    },
+    [searchValue, searchType]
+  );
 
-  const onChangeDestination = useCallback((e) => {
-    setSearchedDestination(e.target.value);
-  }, []);
+  const onChangeSearchType = useCallback(
+    (e) => {
+      setSearchType(e.target.value);
+    },
+    [searchType]
+  );
 
   const onSearchDirection = useCallback(() => {
     if (wayPoints.length === 0) {
       alert('동선에 포함 시킬 핫플레이스를 추가해주세요');
       return;
     }
-    console.log(wayPoints);
     dispatch({
       type: SEARCH_DIRECTION_REQUEST,
       data: {
@@ -166,30 +214,99 @@ const Map = ({ wayPoints }) => {
     });
   }, [origin, destination, wayPoints]);
 
+  const onClickSearchedAddress = useCallback((address) =>() => {
+    dispatch({
+      type: SET_ADDRESS_FOR_DIRECTION,
+      data: {
+        type: isOrigin ? 'origin' : 'destination',
+        address
+      }
+    })
+    const nameSetter = address.place_name.length === 0 ? searchValue : address.place_name;
+    isOrigin ? setSearchedOrigin(nameSetter) : setSearchedDestination(nameSetter);
+    setSearchValue('');
+    setClick(false);
+  }, [isOrigin, searchValue]);
+
   return (
     <>
       <div className="searchDirection__form">
         <div className="searchDirection__input">
           <label htmlFor="">출발지</label>
-          <input type="text" value={searchedOrigin} onChange={onChangeOrigin} />
-          <button onClick={onSubmitPlace('origin')}>찾기</button>
+          <input disabled type="text" value={searchedOrigin} />
+          <button onClick={onClickAddressModal('origin')}>주소 검색</button>
         </div>
         <div className="searchDirection__input">
           <label htmlFor="">목적지</label>
           <input
             type="text"
+            disabled
             value={searchedDestination}
-            onChange={onChangeDestination}
           />
-          <button onClick={onSubmitPlace('destination')}>찾기</button>
+          <button onClick={onClickAddressModal('destination')}>주소 검색</button>
         </div>
       </div>
       <div id="map" style={Style}></div>
       <div className="searchDirection__button">
         <button onClick={onSearchDirection}>동선 검색</button>
       </div>
+      <Modal title={'주소검색'} isClicked={click} setClick={setClick} setSearchValue={setSearchValue}>
+        <form>
+          <div className="searchTypeButtons">
+            <input
+              name="searchType"
+              defaultChecked
+              type="radio"
+              value="address"
+              onChange={onChangeSearchType}
+            />
+            <label>도로명주소로 찾기</label>
+            <input
+              name="searchType"
+              type="radio"
+              value="keyword"
+              onChange={onChangeSearchType}
+            />
+            <label>키워드로 찾기</label>
+          </div>
+          <input
+            type="text"
+            value={searchValue}
+            onChange={onChangeSearchValue}
+            placeholder={
+              searchType === 'address'
+                ? '도로명 + 건물번호'
+                : '키워드를 입력해주세요'
+            }
+          />
+          <button type="submit" onClick={onClickAddressSearch}>
+            검색
+          </button>
+        </form>
+        {addressesToShow.length !== 0
+          ? addressesToShow.map((address, idx) => (
+              <div
+                className="addressList"
+                key={idx}
+                onClick={onClickSearchedAddress(address)}
+              >
+                <a>{address.address_name}</a>
+                <span>{address.place_name}</span>
+              </div>
+            ))
+          : null}
+        {totalAddressesPageNum &&
+          totalAddressesPageNum.map((pageNum, idx) => (
+            <a key={idx} onClick={onClickAddressPageNum(pageNum)}>
+              <span>{pageNum} </span>
+            </a>
+          ))}
+      </Modal>
     </>
   );
 };
 
+Map.propTypes = {
+  wayPoints: PropTypes.array.isRequired
+}
 export default Map;

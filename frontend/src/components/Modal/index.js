@@ -1,9 +1,14 @@
 import React, { useEffect, useCallback, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+
+import PropTypes from 'prop-types';
+import { CLEAR_PLACE_ADDRESS_RESULT } from '../../reducers/place';
 
 import './Modal.scss';
 
 // title, 모달 클릭 여부를 판단 할 state, setState를 props로 전달하여준다.
-const Modal = ({ children, isClicked, setClick, title }) => {
+const Modal = ({ children, isClicked, setClick, title, setSearchValue }) => {
+  const dispatch = useDispatch();
   const modalContainer = useRef();
 
   useEffect(() => {
@@ -16,7 +21,13 @@ const Modal = ({ children, isClicked, setClick, title }) => {
 
   const onBackgroundClicked = useCallback(() => {
     setClick(false);
-  }, [isClicked]);
+    if(setSearchValue) {
+      setSearchValue('');
+    }
+    dispatch({
+      type: CLEAR_PLACE_ADDRESS_RESULT
+    });
+  }, [setSearchValue, isClicked]);
 
   const onToggleModal = useCallback(() => {
     if (!isClicked) {
@@ -41,5 +52,13 @@ const Modal = ({ children, isClicked, setClick, title }) => {
     </div>
   );
 };
+
+Modal.propTypes = {
+  children: PropTypes.node.isRequired,
+  isClicked: PropTypes.bool.isRequired,
+  setClick: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  setSearchValue: PropTypes.func
+}
 
 export default Modal;

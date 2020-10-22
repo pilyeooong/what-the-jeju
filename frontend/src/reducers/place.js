@@ -79,10 +79,6 @@ export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST';
 export const UPLOAD_IMAGES_SUCCESS = 'UPLOAD_IMAGES_SUCCESS';
 export const UPLOAD_IMAGES_FAILURE = 'UPLOAD_IMAGES_FAILURE';
 
-export const GEOCODE_PLACE_REQUEST = 'GEOCODE_PLACE_REQUEST';
-export const GEOCODE_PLACE_SUCCESS = 'GEOCODE_PLACE_SUCCESS';
-export const GEOCODE_PLACE_FAILURE = 'GEOCODE_PLACE_FAILURE';
-
 export const SEARCH_DIRECTION_REQUEST = 'SEARCH_DIRECTION_REQUEST';
 export const SEARCH_DIRECTION_SUCCESS = 'SEARCH_DIRECTION_SUCCESS';
 export const SEARCH_DIRECTION_FAILURE = 'SEARCH_DIRECTION_FAILURE';
@@ -109,6 +105,9 @@ export const UNLIKE_PLACE_FAILURE = 'UNLIKE_PLACE_FAILURE';
 
 export const SET_LIKE_ERROR_NULL = 'SET_LIKE_ERROR_NULL';
 export const SET_WISH_ERROR_NULL = 'SET_WISH_ERROR_NULL';
+
+export const SET_ADDRESS_FOR_DIRECTION = 'SET_ADDRESS_FOR_DIRECTION';
+export const CLEAR_PLACE_ADDRESS_RESULT = 'CLEAR_PLACE_ADDRESS_RESULT';
 
 
 const reducer = (state = initialState, action) => {
@@ -192,6 +191,7 @@ const reducer = (state = initialState, action) => {
       case UPLOAD_PLACE_DONE: {
         draft.imagePaths = [];
         draft.uploadPlaceDone = false;
+        break;
       }
       case UPLOAD_IMAGES_REQUEST: {
         draft.uploadImageLoading = true;
@@ -212,25 +212,17 @@ const reducer = (state = initialState, action) => {
         draft.uploadImageError = action.error;
         break;
       }
-      case GEOCODE_PLACE_REQUEST: {
+      case SET_ADDRESS_FOR_DIRECTION: {
         if(action.data.type === 'origin') {
-          draft.origin.name = action.data.place;
+          draft.origin.name = action.data.address.place_name;
+          draft.origin.lat = action.data.address.lat;
+          draft.origin.lng = action.data.address.lng;
         } else {
-          draft.destination.name = action.data.place;
+          draft.destination.name = action.data.address.place_name;
+          draft.destination.lat = action.data.address.lat;
+          draft.destination.lng = action.data.address.lng;
         }
-        break;
-      }
-      case GEOCODE_PLACE_SUCCESS: {
-        if(action.data.type === 'origin') {
-          draft.origin.lat = action.data.lat;
-          draft.origin.lng = action.data.lng;
-        } else {
-          draft.destination.lat = action.data.lat;
-          draft.destination.lng = action.data.lng;
-        }
-        break;
-      }
-      case GEOCODE_PLACE_FAILURE: {
+        draft.placeAddresses = [];
         break;
       }
       case SEARCH_ADDRESS_REQUEST: {
@@ -338,9 +330,15 @@ const reducer = (state = initialState, action) => {
       }
       case SET_LIKE_ERROR_NULL: {
         draft.likePlaceError = null;
+        break;
       }
       case SET_WISH_ERROR_NULL: {
         draft.wishPlaceError = null;
+        break;
+      }
+      case CLEAR_PLACE_ADDRESS_RESULT: {
+        draft.placeAddresses = [];
+        break;
       }
       default:
         break;

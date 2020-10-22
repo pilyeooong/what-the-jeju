@@ -32,7 +32,7 @@ const PlaceList = () => {
           timeout={3000} //3 secs
         />
       ) : places.length === 0 ? (
-        <div className="placeNotExist">등록된 장소가 없습니다.</div>
+        <div className="placeNotExist">아직 등록된 장소가 없습니다 ㅠㅠ</div>
       ) : (
         places.map((place) => <Place place={place} key={place.id} />)
       )}

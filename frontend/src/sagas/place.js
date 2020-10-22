@@ -162,35 +162,6 @@ function* watchUploadImages() {
   yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
 }
 
-function geocodeAPI(data) {
-  return axios.get(`/place/geocode/${encodeURI(data)}`);
-}
-
-function* geocode(action) {
-  try {
-    const type = action.data.type;
-    const result = yield call(geocodeAPI, action.data.place);
-    yield put({
-      type: GEOCODE_PLACE_SUCCESS,
-      data: {
-        type,
-        lat: result.data.addresses[0].y,
-        lng: result.data.addresses[0].x,
-      },
-    });
-  } catch (err) {
-    console.error(err);
-    yield put({
-      type: GEOCODE_PLACE_FAILURE,
-      error: err.response.data,
-    });
-  }
-}
-
-function* watchGeocode() {
-  yield takeLatest(GEOCODE_PLACE_REQUEST, geocode);
-}
-
 function searchDirectionAPI(data) {
   return axios.post(`/place/directions`, data);
 }
@@ -365,7 +336,6 @@ function* watchLikePlace() {
 
 export default function* placeSaga() {
   yield all([
-    fork(watchGeocode),
     fork(watchSearchDirection),
     fork(watchLoadPlaces),
     fork(watchUploadPlace),

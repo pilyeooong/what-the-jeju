@@ -5,6 +5,7 @@ import useInput from '../../hooks/useInput';
 import { API_HOST } from '../../utils/Constants';
 
 import {
+  CLEAR_PLACE_ADDRESS_RESULT,
   SEARCH_ADDRESS_REQUEST,
   UPLOAD_IMAGES_REQUEST,
   UPLOAD_PLACE_REQUEST,
@@ -25,7 +26,7 @@ const AddPlaceForm = () => {
   const [totalAddressesPageNum, setTotalAddressesPageNum] = useState([]);
   const [currentAddressesPage, setCurrentAddressesPage] = useState(1);
 
-  const [searchValue, onChangeSearchValue] = useInput('');
+  const [searchValue, setSearchValue] = useState('');
   const [category, onChangeCategory] = useInput('');
   const [name, onChangeName] = useInput('');
   const [description, onChangeDescription] = useInput('');
@@ -58,6 +59,10 @@ const AddPlaceForm = () => {
       alert(uploadPlaceError);
     }
   }, [uploadPlaceError]);
+
+  const onChangeSearchValue = useCallback((e) => {
+    setSearchValue(e.target.value);
+  }, []);
 
   const onChangeSearchType = useCallback(
     (e) => {
@@ -137,6 +142,10 @@ const AddPlaceForm = () => {
       setLng(selectedAddress.lng);
       setLat(selectedAddress.lat);
       setAddress(e.target.innerText);
+      setSearchValue('');
+      dispatch({
+        type: CLEAR_PLACE_ADDRESS_RESULT
+      })
       setClick(false);
     },
     [placeAddresses, click]
@@ -154,9 +163,9 @@ const AddPlaceForm = () => {
           onChange={onChangeCategory}
         >
           <option defaultValue value="none">------------</option>
-          <option value="cafe">카페</option>
-          <option value="ocean">해변</option>
-          <option value="museum">박물관</option>
+          <option value="카페">카페</option>
+          <option value="바다">바다</option>
+          <option value="박물관">박물관</option>
         </select>
         <input
           type="text"
@@ -182,7 +191,7 @@ const AddPlaceForm = () => {
           className="form-input"
           placeholder="주소"
           value={address}
-          // disabled
+          readOnly
           required
         />
         <input
@@ -205,7 +214,7 @@ const AddPlaceForm = () => {
         </div>
       </form>
       </div>
-      <Modal title={'주소검색'} isClicked={click} setClick={setClick}>
+      <Modal title={'주소검색'} isClicked={click} setClick={setClick} setSearchValue={setSearchValue}>
         <form>
           <div className="searchTypeButtons">
             <input
