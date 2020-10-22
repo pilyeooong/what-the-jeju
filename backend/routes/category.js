@@ -1,5 +1,5 @@
 const express = require('express');
-const { Category, Place } = require('../models');
+const { Category, Place, Image } = require('../models');
 
 const router = express.Router();
 
@@ -16,14 +16,18 @@ router.post('/', async(req, res, next) => {
 });
 
 router.get('/:id', async (req, res, next) => {
-  const places = await Category.findAll({
+  const category = await Category.findOne({
     where: { id: req.params.id },
     include: [
       {
         model: Place,
+        include: [{
+          model: Image
+        }]
       }
     ]
-  })
-  return res.status(200).send(places);
-})
+  });
+  return res.status(200).send(category.Places);
+});
+
 module.exports = router;

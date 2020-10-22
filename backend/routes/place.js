@@ -139,6 +139,10 @@ router.get('/:id', async (req, res, next) => {
           attributes: ['id'],
         },
         {
+          model: Category,
+          attributes: ['name'],
+        },
+        {
           model: Hashtag,
           attributes: ['name'],
         },
@@ -232,13 +236,6 @@ router.patch('/:placeId/unwish', async (req, res, next) => {
 });
 
 router.post('/directions', async (req, res, next) => {
-  // const wayPoints = [
-  //   { name: '정방폭포', lng: 126.5730501, lat: 33.244748 },
-  //   { name: '서귀포의료원', lng: 126.5639216, lat: 33.2555355 },
-  //   { name: '열린병원', lng: 126.5654153, lat: 33.2544709 },
-  //   { name: '서귀포중학교', lng: 126.5699083, lat: 33.2477513 },
-  //   { name: '동홍동', lng: 126.56887224757, lat: 33.2579021227116 },
-  // ];
   const { origin, destination, wayPoints } = req.body;
   let wayPointsParams = '';
   for (let i = 0; i < wayPoints.length; i++) {
@@ -248,7 +245,6 @@ router.post('/directions', async (req, res, next) => {
       wayPointsParams += `${wayPoints[i].lng},${wayPoints[i].lat}|`;
     }
   }
-  console.log(wayPointsParams);
   const startPoint = `${origin.lng},${origin.lat}`;
   const endPoint = `${destination.lng},${destination.lat}`;
   try {
