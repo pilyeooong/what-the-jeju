@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { LOAD_PLACES_REQUEST } from '../../reducers/place';
-import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 
 import Place from './Place';
 
@@ -32,6 +31,8 @@ const PlaceList = () => {
           width={100}
           timeout={3000} //3 secs
         />
+      ) : places.length === 0 ? (
+        <div className="placeNotExist">등록된 장소가 없습니다.</div>
       ) : (
         places.map((place) => <Place place={place} key={place.id} />)
       )}

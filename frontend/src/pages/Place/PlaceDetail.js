@@ -12,7 +12,7 @@ import {
 
 import ImageSlider from '../../components/ImageSlider';
 import PlaceInfo from '../../components/Place/PlaceInfo';
-import AppLayout from '../../components/AppLayout';
+import PageLayout from '../../components/AppLayout/PageLayout';
 
 import './PlaceDetail.scss';
 
@@ -32,6 +32,8 @@ const PlaceDetail = (props) => {
   const isWished = me && me.Wished.find((v) => v.id === parseInt(placeId, 10));
   const isLiked = me && me.Liked.find(v => v.id === parseInt(placeId, 10));
 
+  const menuSize = 'menuClicked__mid'
+  
   useEffect(() => {
     dispatch({
       type: LOAD_PLACE_REQUEST,
@@ -86,7 +88,7 @@ const PlaceDetail = (props) => {
   }, []);
 
   return (
-    <AppLayout>
+    <PageLayout menuSize={menuSize}>
       <div className="placeContainer">
         {placeDetail && (
           <>
@@ -113,7 +115,7 @@ const PlaceDetail = (props) => {
           </>
         )}
       </div>
-    </AppLayout>
+    </PageLayout>
   );
 };
 

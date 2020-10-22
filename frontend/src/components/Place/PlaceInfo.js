@@ -4,10 +4,14 @@ import PropTypes from 'prop-types';
 import './PlaceInfo.scss';
 
 const PlaceInfo = ({ placeDetail }) => {
-  const { name, description, address, fee, CategoryId } = placeDetail;
+  const { name, description, address, fee, CategoryId, Hashtags } = placeDetail;
+
   return (
     <div className="placeDetailInfo">
       <div className="placeDetailInfo__name">{name}</div>
+      <div className="placeDetailInfo__hashtags">
+        {Hashtags.map(tag => <span className="placeDetailInfo__hashtag">#{tag.name}</span>)}
+      </div>
       <div className="placeDetailInfo__description"><span>{description}</span></div>
       <div className="placeDetailInfo__basicInfo">
         <div className="placeDetailInfo__address">
@@ -35,6 +39,7 @@ PlaceInfo.propTypes = {
     address: PropTypes.string,
     fee: PropTypes.number,
     CategoryId: PropTypes.number,
+    Hashtags: PropTypes.array
   }).isRequired,
 };
 

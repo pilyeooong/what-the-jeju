@@ -38,9 +38,15 @@
       strong {
         font-size: 1.3rem;
       }
-
-      .hashtag {
-        color: dodgerblue;
+      .placeAddress {
+        padding-top: 0.5em;
+      }
+      .placeHashtags {
+        padding-top: 0.5em;
+        .hashtag {
+          color: dodgerblue;
+          margin-right: .3em;
+        }
       }
     }
   }
