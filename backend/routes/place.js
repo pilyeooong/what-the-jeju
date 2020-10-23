@@ -252,27 +252,11 @@ router.post('/directions', async (req, res, next) => {
       `https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${startPoint}&goal=${endPoint}&waypoints=${wayPointsParams}&option=traoptimal`,
       naverConfig
     );
-    return res.status(200).send(result.data.route.traoptimal[0]);
+    return res.status(200).send(result.data);
   } catch (err) {
     console.error(err);
     next(err);
   }
-});
-
-router.get('/geocode/:place', async (req, res, next) => {
-  const { place } = req.params;
-  axios
-    .get(
-      `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=${encodeURI(
-        place
-      )}`,
-      naverConfig
-    )
-    .then((response) => res.status(200).send(response.data))
-    .catch((err) => {
-      console.error(err);
-      next(err);
-    });
 });
 
 module.exports = router;
