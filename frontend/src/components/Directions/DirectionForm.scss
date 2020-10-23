@@ -47,6 +47,10 @@
   display: flex;
   justify-content: flex-end;
 }
+.searchDirection__result {
+  display: flex;
+  justify-content: space-around;
+}
 
 @include tablet {
   .listTitle {

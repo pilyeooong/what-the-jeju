@@ -14,9 +14,6 @@ import {
   UPLOAD_IMAGES_REQUEST,
   UPLOAD_IMAGES_SUCCESS,
   UPLOAD_IMAGES_FAILURE,
-  GEOCODE_PLACE_REQUEST,
-  GEOCODE_PLACE_SUCCESS,
-  GEOCODE_PLACE_FAILURE,
   SEARCH_ADDRESS_REQUEST,
   SEARCH_ADDRESS_SUCCESS,
   SEARCH_ADDRESS_FAILURE,
@@ -169,7 +166,6 @@ function searchDirectionAPI(data) {
 function* searchDirection(action) {
   try {
     const result = yield call(searchDirectionAPI, action.data);
-    console.log(result.data);
     yield put({
       type: SEARCH_DIRECTION_SUCCESS,
       data: result.data

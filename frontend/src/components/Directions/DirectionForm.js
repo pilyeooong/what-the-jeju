@@ -10,13 +10,11 @@ const DirectionForm = ({ me }) => {
   const [wished, setWished] = useState(me.Wished);
   const [wayPoints, setWayPoints] = useState([]);
 
-  useEffect(() => {
-    console.log('wished', wished);
-    console.log('wayPoints', wayPoints);
-  }, [wished, wayPoints]);
-
   const onAddWayPoint = useCallback(
     (place) => () => {
+      if(wayPoints.length === 5) {
+        return alert('최대 5개까지만 경유지 설정이 가능합니다.');
+      }
       const afterAdded = wished.filter((wish) => wish.id !== place.id);
       setWayPoints((prev) => [...prev, place]);
       setWished(afterAdded);

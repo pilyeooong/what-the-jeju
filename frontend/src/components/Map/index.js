@@ -5,10 +5,8 @@ import PropTypes from 'prop-types';
 import {
   SEARCH_DIRECTION_REQUEST,
   SEARCH_ADDRESS_REQUEST,
-  SET_ADDRESS_FOR_DIRECTION
+  SET_ADDRESS_FOR_DIRECTION,
 } from '../../reducers/place';
-
-import useInput from '../../hooks/useInput';
 
 import Modal from '../Modal';
 
@@ -23,23 +21,31 @@ const Map = ({ wayPoints }) => {
   const placeAddresses = useSelector((state) => state.place.placeAddresses);
   const destination = useSelector((state) => state.place.destination);
   const origin = useSelector((state) => state.place.origin);
-  const directionPaths = useSelector((state) => state.place.directionPaths);
+  const paths = useSelector((state) => state.place.directionResult.paths);
+  const directionResultCode = useSelector(
+    (state) => state.place.directionResult.resultCode
+  );
+  const directionResultMessage = useSelector(
+    (state) => state.place.directionResult.resultMessage
+  );
+  const distance = useSelector((state) => state.place.directionResult.distance);
+  const duration = useSelector((state) => state.place.directionResult.duration);
 
   const [isOrigin, setIsOrigin] = useState(false);
   const [searchType, setSearchType] = useState('address');
   const [searchValue, setSearchValue] = useState('');
   const [searchedOrigin, setSearchedOrigin] = useState('');
   const [searchedDestination, setSearchedDestination] = useState('');
-
+  const [displayDurationHour, setDisplayDurationHour] = useState(0);
+  const [displayDurationMinute, setDisplayDurationMinute] = useState(0);
+  const [displayDistance, setDisplayDistance] = useState(0);
+  
   const [currentMap, setCurrentMap] = useState(null);
-  const [infoMessage, setInfoMessage] = useState(null);
 
   const [click, setClick] = useState(false);
   const [addressesToShow, setAddressesToShow] = useState([]);
   const [totalAddressesPageNum, setTotalAddressesPageNum] = useState([]);
   const [currentAddressesPage, setCurrentAddressesPage] = useState(1);
-
-  
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -119,10 +125,10 @@ const Map = ({ wayPoints }) => {
   }, [destination.name, destination.lat, destination.lng, currentMap]);
 
   useEffect(() => {
-    if (directionPaths.length !== 0) {
+    if (paths.length !== 0) {
       new window.naver.maps.Polyline({
         map: currentMap,
-        path: directionPaths,
+        path: paths,
         strokeColor: 'red',
         strokeWeight: 3,
       });
@@ -134,7 +140,19 @@ const Map = ({ wayPoints }) => {
           })
       );
     }
-  }, [wayPoints, currentMap, directionPaths]);
+  }, [wayPoints, currentMap, paths]);
+
+  useEffect(() => {
+    if (duration) {
+      const totalDurationSecond = Math.round(duration / 1000);
+      const totalDurationMinute = Math.round(totalDurationSecond / 60);
+      setDisplayDurationHour(Math.floor(totalDurationMinute / 60));
+      setDisplayDurationMinute(Math.floor(totalDurationMinute % 60));
+    }
+    if (distance) {
+      setDisplayDistance(Math.round(distance / 1000));
+    }
+  }, [duration, distance]);
 
   useEffect(() => {
     setTotalAddressesPageNum([]);
@@ -158,18 +176,21 @@ const Map = ({ wayPoints }) => {
     setSearchValue(e.target.value);
   }, []);
 
-  const onClickAddressModal = useCallback((type) =>() => {
-    if (type === 'origin') {
-      setIsOrigin(true);
-    } else {
-      setIsOrigin(false);
-    }
-    if (!click) {
-      setClick(true);
-    } else {
-      setClick(false);
-    }
-  }, [click]);
+  const onClickAddressModal = useCallback(
+    (type) => () => {
+      if (type === 'origin') {
+        setIsOrigin(true);
+      } else {
+        setIsOrigin(false);
+      }
+      if (!click) {
+        setClick(true);
+      } else {
+        setClick(false);
+      }
+    },
+    [click]
+  );
 
   const onClickAddressPageNum = useCallback(
     (number) => () => {
@@ -214,19 +235,25 @@ const Map = ({ wayPoints }) => {
     });
   }, [origin, destination, wayPoints]);
 
-  const onClickSearchedAddress = useCallback((address) =>() => {
-    dispatch({
-      type: SET_ADDRESS_FOR_DIRECTION,
-      data: {
-        type: isOrigin ? 'origin' : 'destination',
-        address
-      }
-    })
-    const nameSetter = address.place_name.length === 0 ? searchValue : address.place_name;
-    isOrigin ? setSearchedOrigin(nameSetter) : setSearchedDestination(nameSetter);
-    setSearchValue('');
-    setClick(false);
-  }, [isOrigin, searchValue]);
+  const onClickSearchedAddress = useCallback(
+    (address) => () => {
+      dispatch({
+        type: SET_ADDRESS_FOR_DIRECTION,
+        data: {
+          type: isOrigin ? 'origin' : 'destination',
+          address,
+        },
+      });
+      const nameSetter =
+        address.place_name.length === 0 ? searchValue : address.place_name;
+      isOrigin
+        ? setSearchedOrigin(nameSetter)
+        : setSearchedDestination(nameSetter);
+      setSearchValue('');
+      setClick(false);
+    },
+    [isOrigin, searchValue]
+  );
 
   return (
     <>
@@ -238,19 +265,35 @@ const Map = ({ wayPoints }) => {
         </div>
         <div className="searchDirection__input">
           <label htmlFor="">목적지</label>
-          <input
-            type="text"
-            disabled
-            value={searchedDestination}
-          />
-          <button onClick={onClickAddressModal('destination')}>주소 검색</button>
+          <input type="text" disabled value={searchedDestination} />
+          <button onClick={onClickAddressModal('destination')}>
+            주소 검색
+          </button>
         </div>
       </div>
       <div id="map" style={Style}></div>
       <div className="searchDirection__button">
         <button onClick={onSearchDirection}>동선 검색</button>
       </div>
-      <Modal title={'주소검색'} isClicked={click} setClick={setClick} setSearchValue={setSearchValue}>
+        <div className="searchDirection__result">
+        {directionResultCode === 0 ? <><div className="">
+            <span>총 이동시간</span>
+            <span>
+              {' '}
+              {displayDurationHour}시간 {displayDurationMinute}분 소요
+            </span>
+          </div>
+          <div className="">
+            <span>총 이동거리</span>
+            <span> 약 {displayDistance}km</span>
+          </div> </> : <>{directionResultMessage}</>}
+        </div>
+      <Modal
+        title={'주소검색'}
+        isClicked={click}
+        setClick={setClick}
+        setSearchValue={setSearchValue}
+      >
         <form>
           <div className="searchTypeButtons">
             <input
@@ -307,6 +350,6 @@ const Map = ({ wayPoints }) => {
 };
 
 Map.propTypes = {
-  wayPoints: PropTypes.array.isRequired
-}
+  wayPoints: PropTypes.array.isRequired,
+};
 export default Map;

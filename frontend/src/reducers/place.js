@@ -55,7 +55,13 @@ const initialState = {
     lat: 0,
     lng: 0,
   },
-  directionPaths: [],
+  directionResult: {
+    resultCode: null,
+    resultMessage: null,
+    paths: [],
+    distance: null,
+    duration: null,
+  },
 }
 
 export const LOAD_PLACES_REQUEST = 'LOAD_PLACES_REQUEST';
@@ -246,13 +252,16 @@ const reducer = (state = initialState, action) => {
         draft.searchDirectionLoading = true;
         draft.searchDirectionDone = false;
         draft.searchDirectionError = null;
-        draft.directionPaths = [];
         break;
       }
       case SEARCH_DIRECTION_SUCCESS: {
         draft.searchDirectionLoading = false;
         draft.searchDirectionDone = true;
-        draft.directionPaths = action.data.path;
+        draft.directionResult.resultCode = action.data.code;
+        draft.directionResult.resultMessage = action.data.message;
+        draft.directionResult.paths = action.data.route.traoptimal[0].path;
+        draft.directionResult.duration = action.data.route.traoptimal[0].summary.duration;
+        draft.directionResult.distance = action.data.route.traoptimal[0].summary.distance;
         break;
       }
       case SEARCH_DIRECTION_FAILURE: {
