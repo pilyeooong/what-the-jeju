@@ -42,7 +42,7 @@ const DirectionForm = ({ me }) => {
           <div className="listTitle">찜한 목록</div>
           <div className="directionFormList">
             {wished.map((wish) => (
-              <div className="addedPlace">
+              <div key={wish.id} className="addedPlace">
                 <img src={`${API_HOST}/${wish.Images[0].src}`} alt="" />
                 <div className="wishPlaceInfo">
                   <span>{wish.name}</span>

@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon app",
-    "test": "NODE_ENV=test npx mocha --exit ./test/**.spec.js"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage"
   },
   "author": "",
   "license": "ISC",
@@ -29,6 +31,7 @@
     "sequelize-cli": "^6.2.0"
   },
   "devDependencies": {
+    "jest": "^26.6.3",
     "nodemon": "^2.0.4"
   }
 }

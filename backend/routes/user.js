@@ -8,45 +8,11 @@ const { User, Place, Image } = require('../models');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 const { naverConfig } = require('./apiHeaders');
+const { getMe } = require('../controllers/user');
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
-  try {
-    if (req.user) {
-      const user = await User.findOne({
-        where: { id: req.user.id },
-        attributes: {
-          exclude: ['password'],
-        },
-        include: [
-          {
-            model: Place,
-            as: 'Wished',
-            attributes: ['id', 'name', 'lat', 'lng'],
-            include: [
-              {
-                model: Image,
-                attributes: ['id', 'src'],
-              },
-            ],
-          },
-          {
-            model: Place,
-            as: 'Liked',
-            attributes: ['id']
-          }
-        ],
-      });
-      return res.status(200).send(user);
-    } else {
-      return res.status(200).send(null);
-    }
-  } catch (err) {
-    console.error(err);
-    next(err);
-  }
-});
+router.get('/', getMe);
 
 router.post('/login', async (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
