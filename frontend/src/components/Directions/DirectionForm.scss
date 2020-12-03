@@ -1,0 +1,82 @@
+@import '../../global-styles/mixin';
+
+.listTitle {
+  font-size: 1.3rem;
+  font-weight: bold;
+  padding-top: 1em;
+  padding-left: 1em;
+  text-align: center;
+}
+
+.directionFormList {
+  display: flex;
+  overflow-x: scroll;
+  width: 90vw;
+  height: 130px;
+  margin: 0 auto;
+  padding: 1em 1em 0 1em;
+  margin-bottom: 1em;
+  
+  .addedPlace {
+    display: flex;
+    flex-direction: column;
+    
+    min-width: 100px;
+    height: 100px;
+    margin-right: 0.5em;
+
+    img {
+      width: 100px;
+      height: 90%;
+    }
+  }
+}
+
+.searchDirection__form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .searchDirection__input {
+    margin-bottom: 1.2em;
+  }
+}
+
+.searchDirection__button {
+  display: flex;
+  justify-content: flex-end;
+}
+.searchDirection__result {
+  display: flex;
+  justify-content: space-around;
+}
+
+@include tablet {
+  .listTitle {
+    font-size: 1.5rem;
+  }
+  
+  .directionFormList {
+    width: 70vw;
+    height: 180px;
+
+    .addedPlace {
+      min-width: 150px;
+      height: 150px;
+
+      img {
+        width: 150px;
+        height: 100%;
+      }
+    }
+  }
+
+  .searchDirection__form {
+    flex-direction: row;
+
+    .searchDirection__input {
+      margin-right: 1.2em;
+    }
+  }
+}

@@ -1,0 +1,52 @@
+.form-container {
+  max-width: 520px;
+  height: 80vh;
+  margin: 0 auto;
+  padding: 0 2.5em;
+
+  input {
+    width: 100%;
+    height: 3em;
+    border: none;
+  }
+
+  i {
+    color: lightgray;
+  }
+  
+  .form-input {
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid lightgray;
+    margin-bottom: 2em;
+  }
+
+  .password-error {
+    color: red;
+    font-weight: bold;
+  }
+
+  .form-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1em;
+
+    button {
+      width: 320px;
+      height: 3em;
+      border-radius: 13px;
+      margin-bottom: 1em;
+      border: none;
+      font-size: 1.2rem;
+      font-weight: bold;
+      background: #E6E6E6;
+      color: white;
+      cursor: pointer;
+    }
+
+    .local-button:hover {
+      background: black;
+    }
+  }
+}
