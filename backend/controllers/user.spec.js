@@ -1,6 +1,8 @@
 jest.mock('../models');
 const { User } = require('../models');
-const { getMe } = require('./user');
+const { getMe, login } = require('./user');
+const { Strategy: LocalStrategy } = require('passport-local');
+const passport = require('passport');
 
 describe('getMe', () => {
   const res = {
@@ -47,4 +49,35 @@ describe('getMe', () => {
 
     expect(next).toBeCalledWith(err);
   });
+});
+
+
+describe('login', () => {
+  const res = {
+    status: jest.fn(() => res),
+    send: jest.fn()
+  }
+  const next = jest.fn();
+
+  it('유효한 이메일과 비밀번호 입력시 로그인 및 로그인 한 유저 정보를 반환한다.', async () => {
+    const user = { id: 1, email: 'testUser' };
+    const req = {
+      // body: {
+      //   email: 'email@email.com',
+      //   password: 'password'
+      // },
+      login: jest.fn((user, cb) => cb(null))
+    }
+
+    User.findOne.mockResolvedValue(user);
+
+    passport.authenticate = jest.fn((type, callback) => () => { callback(null, user, null) });
+
+    await login(req, res, next);
+
+    expect(passport.authenticate).toHaveBeenCalledTimes(1);
+    expect(req.login).toHaveBeenCalledTimes(1);
+  });
+  it.todo('에러 발생시 next(err)를 호출한다.');
+  it.todo('정상적인 요청이나, 유효한 이메일 혹은 비밀번호가 일치하지 않을시 401 에러와 메시지를 반환한다.');
 });
