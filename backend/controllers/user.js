@@ -52,7 +52,6 @@ exports.login = async (req, res, next) => {
         );
     };
     return req.login(user, async (loginErr) => {
-      console.log('loginErr', loginErr);
       if (loginErr) {
         console.error(loginErr);
         return next(loginErr);
