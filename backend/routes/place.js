@@ -3,7 +3,7 @@ const fs = require('fs');
 const axios = require('axios');
 const { Place, Image, User, Category, Hashtag } = require('../models');
 const { upload } = require('./middlewares');
-const { naverConfig, kakaoConfig } = require('./apiHeaders');
+const { naverConfig, kakaoConfig } = require('../utils/apiHeaders');
 
 const router = express.Router();
 
