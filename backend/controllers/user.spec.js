@@ -1,14 +1,19 @@
 jest.mock('../models');
 const { User } = require('../models');
-const { getMe, login } = require('./user');
+const { getMe, login, logout, signUp } = require('./user');
+const { isLoggedIn, isNotLoggedIn } = require('../routes/middlewares');
 const { Strategy: LocalStrategy } = require('passport-local');
 const passport = require('passport');
+const bcrypt = require('bcrypt');
+
+const res = {
+  status: jest.fn(() => res),
+  send: jest.fn()
+}
+
+jest.mock('bcrypt');
 
 describe('getMe', () => {
-  const res = {
-    status: jest.fn(() => res),
-    send: jest.fn(),
-  };
   const next = jest.fn();
 
   it('로그인이 되어있을 시 (req.user 존재), 내 유저 정보를 반환한다', async () => {
@@ -52,11 +57,6 @@ describe('getMe', () => {
 });
 
 describe('login', () => {
-  const res = {
-    status: jest.fn(() => res),
-    send: jest.fn(),
-  };
-
   const next = jest.fn();
 
   const req = {
@@ -80,7 +80,6 @@ describe('login', () => {
 
     expect(passport.authenticate).toHaveBeenCalledTimes(1);
     expect(req.login).toHaveBeenCalledTimes(1);
-    expect(res.send).toBeCalledWith(user);
   });
 
   it('에러 발생시 next(err)를 호출한다.', async () => {
@@ -118,5 +117,83 @@ describe('login', () => {
 
     expect(passport.authenticate).toHaveBeenCalledTimes(1);
     expect(next).toBeCalledWith('error');
+  });
+});
+
+describe('logout', () => {
+  const next = jest.fn();
+
+  it('로그인이 되어 있는 상태일시 로그아웃', async () => {
+    const req = {
+      isAuthenticated: jest.fn().mockReturnValue(true),
+      logout: jest.fn(),
+      session: {
+        destroy: jest.fn()
+      }
+    };
+
+    await isLoggedIn(req, res, next);
+    expect(next).toBeCalledTimes(1);
+
+    await logout(req, res, next);
+    expect(req.logout).toBeCalledTimes(1);
+    expect(req.session.destroy).toBeCalledTimes(1);
+    expect(res.status).toBeCalledWith(200);
+    expect(res.send).toBeCalledWith('logout');
+  });
+});
+
+describe('signUp', () => {
+  const next = jest.fn();
+
+  const user = {
+      email: 'test@gmail.com',
+      password: 'test',
+      nickname: 'test'
+  };
+
+  const req = {
+    body: {
+      ...user
+    }
+  };
+  
+  const HASHED_PASSWORD = 'HASHED_PASSWORD';
+  bcrypt.hash.mockResolvedValue(HASHED_PASSWORD);
+
+  it('이미 존재하는 이메일로 가입하려는 경우 응답코드 409를 반환한다.', async () => {
+   
+    User.findOne.mockResolvedValue(user);
+
+    await signUp(req, res, next);
+
+    expect(res.status).toBeCalledWith(409);
+    expect(res.send).toBeCalledWith('이미 사용중인 이메일입니다.');
+  });
+
+  it('유효한 값(이메일 중복x)으로 요청시 user를 생성한다.', async () => {
+    const createdUser = {
+      ...user,
+      password: HASHED_PASSWORD
+    }
+    User.findOne.mockResolvedValue(null);
+    User.create.mockResolvedValue(createdUser);
+
+    await signUp(req, res, next);
+    
+    expect(res.status).toBeCalledWith(201);
+    expect(res.send).toBeCalledWith(createdUser);
+
+  });
+
+  it('에러 발생시 next(err) 호출', async () => {
+    const HASHED_PASSWORD = 'HASHED_PASSWORD';
+    const err = new Error();
+    
+    User.findOne.mockRejectedValue(err);
+    
+    await signUp(req, res, next);
+    
+    expect(next).toBeCalledWith(err);
   });
 });

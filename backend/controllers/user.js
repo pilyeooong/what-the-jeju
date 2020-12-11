@@ -65,7 +65,6 @@ exports.login = async (req, res, next) => {
           exclude: ['password'],
         },
       });
-      console.log('loginUser', loginUser);
       return res.status(200).send(loginUser);
     });
   })(req, res, next);
@@ -78,12 +77,12 @@ exports.logout = (req, res, next) => {
 };
 
 exports.signUp = async (req, res, next) => {
-  const exUser = await User.findOne({ where: { email: req.body.email } });
-  if (exUser) {
-    return res.status(409).send('이미 사용중인 이메일입니다.');
-  }
-  const hashedPassword = await bcrypt.hash(req.body.password, 10);
   try {
+    const exUser = await User.findOne({ where: { email: req.body.email } });
+    if (exUser) {
+      return res.status(409).send('이미 사용중인 이메일입니다.');
+    }
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const user = await User.create({
       email: req.body.email,
       nickname: req.body.nickname,
@@ -91,7 +90,7 @@ exports.signUp = async (req, res, next) => {
     });
     return res.status(201).send(user);
   } catch (err) {
-    console.error(err);
+    console.error('asdasd');
     next(err);
   }
 };
