@@ -157,7 +157,7 @@ describe('signUp', () => {
       ...user
     }
   };
-  
+
   const HASHED_PASSWORD = 'HASHED_PASSWORD';
   bcrypt.hash.mockResolvedValue(HASHED_PASSWORD);
 
@@ -187,10 +187,10 @@ describe('signUp', () => {
   });
 
   it('에러 발생시 next(err) 호출', async () => {
-    const HASHED_PASSWORD = 'HASHED_PASSWORD';
     const err = new Error();
     
-    User.findOne.mockRejectedValue(err);
+    // User.findOne.mockRejectedValue(err);
+    User.create.mockRejectedValue(err);
     
     await signUp(req, res, next);
     
