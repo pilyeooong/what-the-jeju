@@ -1,6 +1,5 @@
 const express = require('express');
 
-
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 const { getMe, login, logout, signUp, checkJejuNative } = require('../controllers/user');
