@@ -68,18 +68,18 @@ describe('login', () => {
 
   const user = { id: 1, email: 'testUser' };
 
-  it('유효한 이메일과 비밀번호 입력시 로그인 및 로그인 한 유저 정보를 반환한다.', async () => {
+  it('유효한 이메일과 비밀번호 입력시 로그인, 응답코드 200을 반환한다.', async () => {
     User.findOne.mockResolvedValue(user);
 
     passport.authenticate = jest.fn((type, callback) => () => {
       callback(null, user, null);
     });
-    req.login.mockReturnValue(res);
 
     await login(req, res, next);
 
     expect(passport.authenticate).toHaveBeenCalledTimes(1);
     expect(req.login).toHaveBeenCalledTimes(1);
+    expect(res.status).toBeCalledWith(200);
   });
 
   it('에러 발생시 next(err)를 호출한다.', async () => {
@@ -89,8 +89,7 @@ describe('login', () => {
 
     await login(req, res, next);
 
-    expect(passport.authenticate).toHaveBeenCalledTimes(1);
-    expect(req.login).toHaveBeenCalledTimes(1);
+    expect(next).toBeCalledWith('error');
   });
 
   it('정상적인 요청이나, 유효한 이메일 혹은 비밀번호가 일치하지 않을시 401 에러와 메시지를 반환한다.', async () => {

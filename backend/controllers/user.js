@@ -36,7 +36,7 @@ exports.getMe = async (req, res, next) => {
       return res.status(200).send(null);
     }
   } catch (err) {
-    console.error(err);
+    // console.error(err);
     next(err);
   }
 };
@@ -65,6 +65,7 @@ exports.login = async (req, res, next) => {
           exclude: ['password'],
         },
       });
+      console.log('loginUser', loginUser);
       return res.status(200).send(loginUser);
     });
   })(req, res, next);
@@ -90,7 +91,7 @@ exports.signUp = async (req, res, next) => {
     });
     return res.status(201).send(user);
   } catch (err) {
-    console.error('asdasd');
+    // console.error(err);
     next(err);
   }
 };
@@ -112,7 +113,7 @@ exports.checkJejuNative = async (req, res, next) => {
     }
     return res.status(200).send(false);
   } catch (err) {
-    console.error(err);
+    // console.error(err);
     next(err);
   }
 };
