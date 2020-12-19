@@ -2,7 +2,7 @@ import React from 'react'
 
 import SignupForm from '../../components/Auth/SignupForm';
 
-const Signup = (props) => {
+const Signup = () => {
 
   return <SignupForm />
 }

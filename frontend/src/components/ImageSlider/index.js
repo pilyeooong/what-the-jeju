@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { API_HOST } from '../../utils/Constants';
 
 import './ImageSlider.scss';
@@ -16,7 +17,9 @@ const ImageSlider = ({ images }) => {
   };
 
   useEffect(() => {
-    slideRefs.current.forEach(slide => slide.style.transform = `translateX(${x}%)`);
+    slideRefs.current.forEach(
+      (slide) => (slide.style.transform = `translateX(${x}%)`)
+    );
   }, [x]);
 
   return (
@@ -38,6 +41,18 @@ const ImageSlider = ({ images }) => {
       </button>
     </div>
   );
+};
+
+ImageSlider.propTypes = {
+  images: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      src: PropTypes.string,
+      createAt: PropTypes.string,
+      updateAt: PropTypes.string,
+      PlaceId: PropTypes.number,
+    })
+  ),
 };
 
 export default ImageSlider;

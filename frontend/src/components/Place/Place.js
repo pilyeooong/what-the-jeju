@@ -40,7 +40,16 @@ const Place = ({ place }) => {
 };
 
 Place.propTypes = {
-  place: PropTypes.object.isRequired,
+  place: PropTypes.shape({
+    id: PropTypes.number,
+    name: PropTypes.string,
+    description: PropTypes.string,
+    address: PropTypes.string,
+    fee: PropTypes.number,
+    Images: PropTypes.array,
+    Category: PropTypes.shape({ name: PropTypes.string }),
+    Hashtags: PropTypes.array,
+  }).isRequired,
 };
 
 export default Place;

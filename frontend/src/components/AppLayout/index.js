@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -157,5 +158,9 @@ const AppLayout = ({ children }) => {
     </div>
   );
 };
+
+AppLayout.propTypes = {
+  children: PropTypes.node.isRequired
+}
 
 export default AppLayout;

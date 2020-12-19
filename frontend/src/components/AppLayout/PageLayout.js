@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -140,5 +141,10 @@ const PageLayout = ({ children, menuSize }) => {
     </div>
   );
 };
+
+PageLayout.propTypes = {
+  children: PropTypes.node.isRequired,
+  menuSize: PropTypes.string,
+}
 
 export default PageLayout;

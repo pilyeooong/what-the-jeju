@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -21,7 +22,7 @@ const AuthRouter = ({ match }) => {
   }, []);
 
   useEffect(() => {
-    if(me) {
+    if (me) {
       history.replace('/');
     }
   }, [me]);
@@ -35,5 +36,9 @@ const AuthRouter = ({ match }) => {
     </div>
   );
 };
+
+AuthRouter.propTypes = {
+  match: PropTypes.object.isRequired
+}
 
 export default AuthRouter;

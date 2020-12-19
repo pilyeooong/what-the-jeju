@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 
 import { API_HOST } from '../../utils/Constants';
 
@@ -74,5 +75,9 @@ const DirectionForm = ({ me }) => {
     </div>
   );
 };
+
+DirectionForm.propTypes = {
+  me: PropTypes.object
+}
 
 export default DirectionForm;

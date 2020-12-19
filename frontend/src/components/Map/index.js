@@ -352,4 +352,5 @@ const Map = ({ wayPoints }) => {
 Map.propTypes = {
   wayPoints: PropTypes.array.isRequired,
 };
+
 export default Map;

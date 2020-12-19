@@ -59,7 +59,7 @@ const LoginForm = () => {
               value={email}
               onChange={onChangeEmail}
             />
-            <i id="emailValidation" class="fas fa-check"></i>
+            <i id="emailValidation" className="fas fa-check"></i>
           </div>
           <div className="form-input form-password">
             <input
@@ -68,14 +68,14 @@ const LoginForm = () => {
               value={password}
               onChange={onChangePassword}
             />
-            <i class="fas fa-check"></i>
+            <i className="fas fa-check"></i>
           </div>
           <div className="form-button">
             <button className="local-button" type="submit">
               로그인하기
             </button>
             <button className="form-kakaoLogin">
-              <i class="fas fa-comment"></i>
+              <i className="fas fa-comment"></i>
               <a href="/api/auth/kakao">카카오로 로그인하기</a>
             </button>
           </div>
@@ -83,7 +83,7 @@ const LoginForm = () => {
         <div className="form-signup__link">
           <span>왓더제주 계정이 없으신가요?</span>
           <Link to="/auth/signup">
-            <a>회원가입</a>
+            <span>회원가입</span>
           </Link>
         </div>
       </div>

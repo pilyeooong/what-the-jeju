@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   LIKE_PLACE_REQUEST,
@@ -118,5 +119,9 @@ const PlaceDetail = (props) => {
     </PageLayout>
   );
 };
+
+PlaceDetail.propTypes = {
+  props: PropTypes.object
+}
 
 export default PlaceDetail;
