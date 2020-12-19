@@ -6,7 +6,7 @@ const { getMe, login, logout, signUp, checkJejuNative } = require('../controller
 
 const router = express.Router();
 
-router.get('/', isLoggedIn, getMe);
+router.get('/', getMe);
 
 router.post('/login', isNotLoggedIn, login);
 
