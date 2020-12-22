@@ -202,7 +202,7 @@ exports.searchPlaceWithAddress = async (req, res, next) => {
   try {
     const result = await axios.get(
       `https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURI(
-        req.params.placeName
+        req.params.placeAddress
       )}`,
       kakaoConfig
     );
@@ -216,7 +216,6 @@ exports.searchPlaceWithAddress = async (req, res, next) => {
       obj.lat = address.y;
       return obj;
     });
-
     return res.status(200).send(addresses);
   } catch (err) {
     console.error(err);
