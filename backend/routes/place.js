@@ -25,7 +25,7 @@ try {
 
 router.post('/images', upload.array('image'), addImages);
 
-router.get('/search/address/:placeName', searchPlaceWithAddress);
+router.get('/search/address/:placeAddress', searchPlaceWithAddress);
 
 router.get('/search/keyword/:placeName', searchPlaceWithKeyword);
 
