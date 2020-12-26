@@ -65,7 +65,6 @@ exports.login = async (req, res, next) => {
           exclude: ['password'],
         },
       });
-      console.log('loginUser', loginUser);
       return res.status(200).send(loginUser);
     });
   })(req, res, next);
