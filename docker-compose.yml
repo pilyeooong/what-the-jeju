@@ -4,44 +4,47 @@ networks:
     hotjeju:
         driver: bridge
 services:
-    mysql:
-        env_file: .env
-        networks:
-            - hotjeju
-        image: mysql
-        # build: ./mysql
-        restart: unless-stopped
-        container_name: hotjeju_mysql
-        ports:
-            - "3306:3306"
-        environment: 
-            MYSQL_DATABASE: hotjeju
-            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-        volumes:
-            - ./mysql/mysql_data:/var/lib/mysql
-    frontend:
+    nginx:
+        restart: always
         networks:
             - hotjeju
         build:
-            dockerfile: Dockerfile.dev
-            context: ./frontend
-        volumes:
-            - /app/node_modules
-            - ./frontend:/app
+            dockerfile: Dockerfile
+            context: ./nginx
         ports:
-            - "3000:3000"
-        stdin_open: true
+            - "3000:80"
     backend:
-        networks:
+        networks: 
             - hotjeju
         build:
-            dockerfile: Dockerfile.dev
+            dockerfile: Dockerfile
             context: ./backend
         container_name: hotjeju_backend
         volumes: 
             - /app/node_modules
             - ./backend:/app
-        ports:
-            - "4000:4000"
-        depends_on:
-            - mysql
+    frontend:
+        networks:
+            - hotjeju
+        build:
+            dockerfile: Dockerfile
+            context: ./frontend
+        volumes:
+            - /app/node_modules
+            - ./frontend:/app
+        stdin_open: true
+    # mysql:
+    #     env_file: .env
+    #     networks:
+    #         - hotjeju
+    #     image: mysql
+    #     # build: ./mysql
+    #     restart: unless-stopped
+    #     container_name: hotjeju_mysql
+    #     ports:
+    #         - "3306:3306"
+    #     environment: 
+    #         MYSQL_DATABASE: hotjeju
+    #         MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    #     volumes:
+    #         - ./mysql/mysql_data:/var/lib/mysql
