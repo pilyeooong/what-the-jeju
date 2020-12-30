@@ -26,7 +26,7 @@ db.sequelize
 
 passportConfig();
 
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(cors({ origin: 'http://hotjeju-env.eba-fzpsip2j.ap-northeast-2.elasticbeanstalk.com/', credentials: true }));
 app.use(morgan('dev'));
 app.use('/', express.static(path.join(__dirname, 'uploads')))
 app.use(express.json());
