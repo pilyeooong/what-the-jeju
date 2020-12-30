@@ -99,21 +99,21 @@ const AppLayout = ({ children }) => {
             <>
               {me ? (
                 <div className="menu__list">
-                  {me.jejuNative && <Link to="/place/add">업로드</Link>}
+                  <Link to="/place/add">업로드</Link>
                   <Link to="/place/directions">동선 짜기</Link>
                   <Link to="/profile">프로필</Link>
-                  <a className="authenticate" onClick={onClickLogOut}>
+                  <span className="authenticate" onClick={onClickLogOut}>
                     로그아웃
-                  </a>
+                  </span>
                 </div>
               ) : (
                 <div className="menu__list">
-                  <a
+                  <span
                     className="authenticate"
                     onClick={onToggleLoginModal}
                   >
                     로그인
-                  </a>
+                  </span>
                   <Link to="/auth/signup">회원가입</Link>
                 </div>
               )}
@@ -123,10 +123,10 @@ const AppLayout = ({ children }) => {
         <nav className="categories">
           {!menuClicked && (
             <div className="category__links">
-              <a onClick={onClickCategory(0)}>전체</a>
-              <a onClick={onClickCategory(1)}>카페</a>
-              <a onClick={onClickCategory(2)}>바다</a>
-              <a onClick={onClickCategory(3)}>박물관</a>
+              <span onClick={onClickCategory(0)}>전체</span>
+              <span onClick={onClickCategory(1)}>카페</span>
+              <span onClick={onClickCategory(2)}>바다</span>
+              <span onClick={onClickCategory(3)}>박물관</span>
             </div>
           )}
         </nav>
@@ -147,7 +147,7 @@ const AppLayout = ({ children }) => {
           <div className="loginModal__links">
             <button className="kakaoLogin__link" onClick={onClickKakaoLogin}>
               <i className="fas fa-comment"></i>
-              <a>카카오로 시작하기</a>
+              <span>카카오로 시작하기</span>
             </button>
             <Link to="/auth/login">
               <span>이메일로 시작하기</span>

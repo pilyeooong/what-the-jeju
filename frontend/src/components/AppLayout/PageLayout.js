@@ -86,21 +86,21 @@ const PageLayout = ({ children, menuSize }) => {
             <>
               {me ? (
                 <div className="menu__list">
-                  {me.jejuNative && <Link to="/place/add">업로드</Link>}
+                  <Link to="/place/add">업로드</Link>
                   <Link to="/place/directions">동선 짜기</Link>
                   <Link to="/profile">프로필</Link>
-                  <a className="authenticate" onClick={onClickLogOut}>
+                  <span className="authenticate" onClick={onClickLogOut}>
                     로그아웃
-                  </a>
+                  </span>
                 </div>
               ) : (
                 <div className="menu__list">
-                  <a
+                  <span
                     className="authenticate"
                     onClick={onToggleLoginModal}
                   >
                     로그인
-                  </a>
+                  </span>
                   <Link to="/auth/signup">회원가입</Link>
                 </div>
               )}
@@ -130,7 +130,7 @@ const PageLayout = ({ children, menuSize }) => {
           <div className="loginModal__links">
             <button className="kakaoLogin__link" onClick={onClickKakaoLogin}>
               <i className="fas fa-comment"></i>
-              <a>카카오로 시작하기</a>
+              <span>카카오로 시작하기</span>
             </button>
             <Link to="/auth/login">
               <span>이메일로 시작하기</span>
