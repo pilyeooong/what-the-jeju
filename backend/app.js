@@ -7,6 +7,8 @@ const morgan = require('morgan');
 const cors = require('cors');
 const passport = require('passport');
 const passportConfig = require('./passport');
+const helmet = require('helmet');
+const hpp = require('hpp');
 const db = require('./models');
 
 const apiRouter = require('./routes');
@@ -25,10 +27,22 @@ db.sequelize
   });
 
 passportConfig();
-
-app.use(cors({ origin: 'http://hotjeju-env.eba-fzpsip2j.ap-northeast-2.elasticbeanstalk.com/', credentials: true }));
-app.use(morgan('dev'));
-app.use('/', express.static(path.join(__dirname, 'uploads')))
+if (process.env.NODE_ENV === 'production') {
+  app.use(
+    cors({
+      origin:
+        'http://hotjeju-env.eba-fzpsip2j.ap-northeast-2.elasticbeanstalk.com/',
+      credentials: true,
+    })
+  );
+  app.use(morgan('combined'));
+  app.use(helmet());
+  app.use(hpp());
+} else {
+  app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+  app.use(morgan('dev'));
+}
+app.use('/', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
