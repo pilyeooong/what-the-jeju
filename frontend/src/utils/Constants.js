@@ -1,1 +1,4 @@
-export const API_HOST = process.env.REACT_APP_API_HOST || "http://localhost:4000";
+export const API_HOST =
+  process.env.NODE_ENV === 'production'
+  ? 'http://hotjeju-env.eba-fzpsip2j.ap-northeast-2.elasticbeanstalk.com'
+  : 'http://localhost:4000';
