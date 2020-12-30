@@ -4,25 +4,31 @@ networks:
     hotjeju:
         driver: bridge
 services:
-    nginx:
-        restart: always
+    # 프록시 역할의 nginx
+    # nginx:
+    #     restart: always
+    #     networks:
+    #         - hotjeju
+    #     build:
+    #         dockerfile: Dockerfile
+    #         context: ./nginx
+    #     ports:
+    #         - "3000:80"
+    # 로컬 개발 시 사용 할 데이터베이스
+    mysql:
+        env_file: .env
         networks:
             - hotjeju
-        build:
-            dockerfile: Dockerfile
-            context: ./nginx
+        image: mysql
+        restart: unless-stopped
+        container_name: hotjeju_mysql
         ports:
-            - "3000:80"
-    backend:
-        networks: 
-            - hotjeju
-        build:
-            dockerfile: Dockerfile
-            context: ./backend
-        container_name: hotjeju_backend
-        volumes: 
-            - /app/node_modules
-            - ./backend:/app
+            - "3306:3306"
+        environment: 
+            MYSQL_DATABASE: hotjeju
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+        volumes:
+            - ./mysql/mysql_data:/var/lib/mysql
     frontend:
         networks:
             - hotjeju
@@ -32,19 +38,20 @@ services:
         volumes:
             - /app/node_modules
             - ./frontend:/app
+        ports:
+            - "3000:80"
         stdin_open: true
-    # mysql:
-    #     env_file: .env
-    #     networks:
-    #         - hotjeju
-    #     image: mysql
-    #     # build: ./mysql
-    #     restart: unless-stopped
-    #     container_name: hotjeju_mysql
-    #     ports:
-    #         - "3306:3306"
-    #     environment: 
-    #         MYSQL_DATABASE: hotjeju
-    #         MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-    #     volumes:
-    #         - ./mysql/mysql_data:/var/lib/mysql
+    backend:
+        networks: 
+            - hotjeju
+        build:
+            dockerfile: Dockerfile.dev
+            context: ./backend
+        container_name: hotjeju_backend
+        volumes: 
+            - /app/node_modules
+            - ./backend:/app
+        ports:
+            - "4000:4000"
+        depends_on: 
+            - mysql
