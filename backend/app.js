@@ -30,8 +30,7 @@ passportConfig();
 if (process.env.NODE_ENV === 'production') {
   app.use(
     cors({
-      origin:
-        'http://hotjeju-env.eba-fzpsip2j.ap-northeast-2.elasticbeanstalk.com/',
+      origin: true,
       credentials: true,
     })
   );

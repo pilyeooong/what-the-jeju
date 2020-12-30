@@ -5,7 +5,11 @@ import { API_HOST } from '../utils/Constants';
 import placeSaga from './place';
 import userSaga from './user';
 
-// axios.defaults.baseURL = `${API_HOST}/api/`;
+if (process.env.NODE_ENV === 'development') {
+  axios.defaults.baseURL = `${API_HOST}/api/`; 
+} else if (process.env.NODE_ENV === 'production'){
+  axios.defaults.baseURL = `api`;
+}
 axios.defaults.withCredentials = true;
 
 export default function* rootSaga() {
