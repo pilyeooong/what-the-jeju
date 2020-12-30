@@ -18,11 +18,18 @@
 - Redux, Redux-Saga
 - Docker
 
+## **Deploy**
+- Docker
+- nginx
+- Travis CI
+- AWS ElasticBeanstalk
+
 ----------
 
 
 ### **Contact**
-**현재 개발 진행중인 사이드 프로젝트입니다.**
+
+**배포 테스트 후 현재는 내린 상태입니다**
 
 pilyeooong@gmail.com
 
