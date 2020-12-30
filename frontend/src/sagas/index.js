@@ -7,8 +7,8 @@ import userSaga from './user';
 
 if (process.env.NODE_ENV === 'development') {
   axios.defaults.baseURL = `${API_HOST}/api/`; 
-} else if (process.env.NODE_ENV === 'production'){
-  axios.defaults.baseURL = `api`;
+} else {
+  axios.defaults.baseURL = `api/`;
 }
 axios.defaults.withCredentials = true;
 
