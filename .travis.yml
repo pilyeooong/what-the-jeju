@@ -18,3 +18,15 @@ after_success:
     - docker push pilyeooong/hotjeju-frontend
     - docker push pilyeooong/hotjeju-backend
     - docker push pilyeooong/hotjeju-nginx
+
+deploy:
+    provider: elasticbeanstalk
+    region: "ap-northeast-2"
+    app: "hotjeju"
+    env: "Hotjeju-env"
+    bucket_name: "elasticbeanstalk-ap-northeast-2-526797328004"
+    bucket_path: "hotjeju"
+    on:
+        branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
