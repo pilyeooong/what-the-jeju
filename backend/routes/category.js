@@ -1,9 +1,9 @@
 const express = require('express');
-const { getCategorizedPlaces } = require('../controllers/category');
+const { getCategorizedPlaces, createCategory } = require('../controllers/category');
 
 const router = express.Router();
 
-router.post('/',);
+router.post('/', createCategory);
 
 router.get('/:id', getCategorizedPlaces);
 
