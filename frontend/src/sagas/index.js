@@ -8,7 +8,7 @@ import userSaga from './user';
 if (process.env.NODE_ENV === 'development') {
   axios.defaults.baseURL = `${API_HOST}/api/`; 
 } else {
-  axios.defaults.baseURL = `api/`;
+  axios.defaults.baseURL = `http://hotjeju-env.eba-fzpsip2j.ap-northeast-2.elasticbeanstalk.com/api/`;
 }
 axios.defaults.withCredentials = true;
 
