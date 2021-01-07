@@ -32,7 +32,7 @@ module.exports = () => {
       }
     } catch (err) {
       console.error(err);
-      done(error);
+      done(err);
     }
   }))
 }
