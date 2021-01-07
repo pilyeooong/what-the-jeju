@@ -170,6 +170,6 @@ describe('PATCH /:id/unwish', () => {
 
 afterAll(async (done) => {
   await sequelize.sync({ force: true });
-  sequelize.close();
+  await sequelize.close();
   done();
 });

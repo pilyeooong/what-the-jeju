@@ -76,7 +76,7 @@ describe('POST /login ~ ', () => {
 
   it('로그아웃 상태에서는 로그아웃 시도시 403 에러', async (done) => {
     const res =  await agent.post('/api/user/logout');
-    expect(res.status).toEqual(403);
+    expect(res.status).toEqual(401);
     expect(res.text).toEqual('로그인이 필요합니다.');
     done();
   });
@@ -90,7 +90,7 @@ describe('POST /check/JejuNative', () => {
       lat: expect.any(Number),
       lng: expect.any(Number),
     });
-    expect(res.status).toEqual(403);
+    expect(res.status).toEqual(401);
     done();
   });
 
@@ -152,6 +152,6 @@ describe('POST /check/JejuNative', () => {
 
 afterAll(async (done) => {
   await sequelize.sync({ force: true });
-  sequelize.close();
+  await sequelize.close();
   done();
 });

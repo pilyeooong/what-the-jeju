@@ -16,12 +16,12 @@ describe('isLoggedIn', () => {
     expect(next).toBeCalledTimes(1);
   });
 
-  it('로그인이 되어 있지 않으면 403 응답코드를 반환한다.', () => {
+  it('로그인이 되어 있지 않으면 401 응답코드를 반환한다.', () => {
     const req = {
       isAuthenticated: jest.fn(() => false)
     }
     isLoggedIn(req, res, next);
-    expect(res.status).toBeCalledWith(403);
+    expect(res.status).toBeCalledWith(401);
     expect(res.send).toBeCalledWith('로그인이 필요합니다.');
   })
 });
