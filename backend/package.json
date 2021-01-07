@@ -8,6 +8,7 @@
     "dev": "nodemon server",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:e2e": "jest --config ./test/jest-e2e.json --runInBand",
     "test:cov": "jest --coverage"
   },
   "author": "",

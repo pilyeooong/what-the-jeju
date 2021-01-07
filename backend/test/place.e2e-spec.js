@@ -12,8 +12,9 @@ const PLACE_ADDRESS = 'PLACE_ADDRESS';
 const PLACE_LAT = 'PLACE_LAT';
 const PLACE_LNG = 'PLACE_LNG';
 
-beforeAll(async () => {
+beforeAll(async (done) => {
   await sequelize.sync();
+  done();
 });
 
 const agent = request.agent(app);
@@ -167,6 +168,8 @@ describe('PATCH /:id/unwish', () => {
   });
 });
 
-afterAll(async () => {
+afterAll(async (done) => {
   await sequelize.sync({ force: true });
+  sequelize.close();
+  done();
 });

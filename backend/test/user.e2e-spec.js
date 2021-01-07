@@ -3,8 +3,9 @@ const axios = require('axios');
 const { sequelize } = require('../models');
 const app = require('../app');
 
-beforeAll(async () => {
+beforeAll(async (done) => {
   await sequelize.sync();
+  done();
 });
 
 const TEST_EMAIL = 'test@test.com';
@@ -149,6 +150,8 @@ describe('POST /check/JejuNative', () => {
   });
 })
 
-afterAll(async () => {
+afterAll(async (done) => {
   await sequelize.sync({ force: true });
+  sequelize.close();
+  done();
 });
