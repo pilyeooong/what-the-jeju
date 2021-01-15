@@ -28,7 +28,5 @@
 
 ### **Contact**
 
-**배포 테스트 후 현재는 내린 상태입니다**
-
 pilyeooong@gmail.com
 
